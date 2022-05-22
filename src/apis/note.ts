@@ -1,3 +1,4 @@
+import { RealtimeSubscription } from '@supabase/supabase-js';
 import { Note } from 'models/Note';
 import supabaseClient from 'services/supabase';
 
@@ -24,3 +25,10 @@ export const updateNote = async (
   const data = await supabaseClient.update('note', id, { data: content });
   return data || {};
 };
+
+export const deleteNoteById = async (id: string): Promise<Note> => {
+  const data = await supabaseClient.delete('note', id);
+  return data || {};
+};
+
+export const syncNoteById = async (id: string, callback: (e: Note) => void): Promise<RealtimeSubscription> => supabaseClient.subscribe<Note>(`note:id=eq.${id}`, (e) => callback(e.new), 'UPDATE');

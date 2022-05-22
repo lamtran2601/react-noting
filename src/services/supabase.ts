@@ -1,14 +1,14 @@
 import { createClient } from '@supabase/supabase-js';
-import { SupabaseEventTypes } from '@supabase/supabase-js/dist/module/lib/types';
+import { SupabaseEventTypes, SupabaseRealtimePayload } from '@supabase/supabase-js/dist/module/lib/types';
 
 const supabaseUrl = process.env.REACT_APP_SUPABASE_URL || 'https://supabase.co';
 const supabaseKey = process.env.REACT_APP_SUPABASE_ANON_KEY || 'anon-key';
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 const supabaseClient = {
-  get: async (table: string, range = { from: 0, to: 9 }) => {
+  get: async <T = any>(table: string, range = { from: 0, to: 9 }) => {
     const { data, error } = await supabase
-      .from(table)
+      .from<T>(table)
       .select('*')
       .range(range.from, range.to);
     if (error) {
@@ -16,53 +16,63 @@ const supabaseClient = {
     }
     return data;
   },
-  getById: async (table: string, id: string) => {
+  getById: async <T = any>(table: string, id: T[keyof T]) => {
     const { data, error } = await supabase
-      .from(table)
+      .from<T>(table)
       .select('*')
-      .eq('id', id)
+      .eq('id' as keyof T, id)
       .single();
     if (error) {
       throw new Error(error.message);
     }
     return data;
   },
-  create: async (table: string, payload: any) => {
-    const { data, error } = await supabase.from(table).insert(payload).single();
-    if (error) {
-      throw new Error(error.message);
-    }
-    return data;
-  },
-  createMany: async (table: string, payload: any[]) => {
-    const { data, error } = await supabase.from(table).insert(payload);
-    if (error) {
-      throw new Error(error.message);
-    }
-    return data;
-  },
-  update: async (table: string, id: string, payload: any) => {
+  create: async <T = any>(table: string, payload: T) => {
     const { data, error } = await supabase
-      .from(table)
-      .update(payload)
-      .eq('id', id)
+      .from<T>(table)
+      .insert(payload)
       .single();
     if (error) {
       throw new Error(error.message);
     }
     return data;
   },
-  delete: async (table: string, id: string) => {
-    const { data, error } = await supabase.from(table).delete().eq('id', id);
+  createMany: async <T = any>(table: string, payload: any[]) => {
+    const { data, error } = await supabase.from<T>(table).insert(payload);
     if (error) {
       throw new Error(error.message);
     }
     return data;
   },
-  subscribe: async (
+  update: async <T = any>(table: string, id: T[keyof T], payload: any) => {
+    const { data, error } = await supabase
+      .from<T>(table)
+      .update(payload)
+      .eq('id' as keyof T, id)
+      .single();
+    if (error) {
+      throw new Error(error.message);
+    }
+    return data;
+  },
+  delete: async <T = any>(table: string, id: T[keyof T]) => {
+    const { data, error } = await supabase
+      .from<T>(table)
+      .delete()
+      .eq('id' as keyof T, id)
+      .single();
+    if (error) {
+      throw new Error(error.message);
+    }
+    return data;
+  },
+  subscribe: async <T = any>(
     table: string,
-    callback: (payload: any) => void,
+    callback: (payload: SupabaseRealtimePayload<T>) => void,
     on: SupabaseEventTypes = '*',
-  ) => supabase.from(table).on(on, callback).subscribe(),
+  ) => supabase.from<T>(table).on(on, (e) => {
+    console.log(e);
+    callback(e);
+  }).subscribe(),
 };
 export default supabaseClient;

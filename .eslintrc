@@ -6,7 +6,8 @@
   "extends": [
     "plugin:react/recommended",
     "airbnb",
-    "plugin:@typescript-eslint/recommended"
+    "plugin:@typescript-eslint/recommended",
+    "plugin:@typescript-eslint/eslint-recommended"
   ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
@@ -24,8 +25,6 @@
   },
   "rules": {
     "no-use-before-define": "off",
-    "@typescript-eslint/no-use-before-define": ["error"],
-    "react/jsx-filename-extension": ["warn", { "extensions": [".tsx"] }],
     "import/extensions": [
       "error",
       "ignorePackages",
@@ -35,10 +34,15 @@
       }
     ],
     "no-shadow": "off",
+    "max-len": "warn",
+    "@typescript-eslint/no-use-before-define": ["error"],
     "@typescript-eslint/no-shadow": ["error"],
+    "@typescript-eslint/no-explicit-any": "off",
+    "react/jsx-filename-extension": ["warn", { "extensions": [".tsx"] }],
     "react/prop-types": "off",
     "react/require-default-props": "off",
     "react/function-component-definition": [2, { "namedComponents": "arrow-function" }],
     "react/react-in-jsx-scope": "off"
+    
   }
 }

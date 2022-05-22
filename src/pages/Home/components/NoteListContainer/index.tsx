@@ -1,9 +1,9 @@
-import { getNotes } from "apis/note";
-import Loading from "components/Loading";
-import NoteList from "components/NoteList";
-import useRequest from "hooks/useRequest";
-import { useCallback } from "react";
-import { useNavigate } from "react-router-dom";
+import { getNotes } from 'apis/note';
+import Loading from 'components/Loading';
+import NoteList from 'components/NoteList';
+import useRequest from 'hooks/useRequest';
+import { useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const NoteListContainer = () => {
   const {
@@ -18,11 +18,11 @@ const NoteListContainer = () => {
     (id: string) => {
       navigate(`/note/${id}`);
     },
-    [navigate]
+    [navigate],
   );
 
   if (error) {
-    return <>{error.message}</>;
+    return error.message;
   }
   if (loading) {
     return <Loading />;

@@ -1,7 +1,7 @@
-import { Button } from "antd";
-import NoteItem from "components/NoteList/NoteItem";
-import { Note } from "models/Note";
-import React from "react";
+import { Button } from 'antd';
+import NoteItem from 'components/NoteList/NoteItem';
+import { Note } from 'models/Note';
+import React from 'react';
 
 interface NoteListProps {
   notes: Note[];
