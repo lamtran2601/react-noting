@@ -70,9 +70,6 @@ const supabaseClient = {
     table: string,
     callback: (payload: SupabaseRealtimePayload<T>) => void,
     on: SupabaseEventTypes = '*',
-  ) => supabase.from<T>(table).on(on, (e) => {
-    console.log(e);
-    callback(e);
-  }).subscribe(),
+  ) => supabase.from<T>(table).on(on, callback).subscribe(),
 };
 export default supabaseClient;

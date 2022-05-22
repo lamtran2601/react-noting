@@ -11,7 +11,7 @@ const useSubscription = <T>(service: (callback: (args: any) => void)
     }).then(setSubscription);
     return () => {
       if (!subscription?.isClosed) {
-        // subscription?.unsubscribe();
+        subscription?.unsubscribe();
       }
     };
   }, []);
