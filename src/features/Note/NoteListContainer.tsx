@@ -1,7 +1,7 @@
 import { getNotes } from 'apis/note';
 import Loading from 'components/Loading';
 import NoteList from 'components/NoteList';
-import useRequest from 'hooks/useRequest';
+import { useRequest } from 'hooks';
 import { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -24,10 +24,11 @@ const NoteListContainer = () => {
   if (error) {
     return error.message;
   }
+
   if (loading) {
     return <Loading />;
   }
 
-  return <NoteList notes={notes} onNoteClick={handleNoteClick} />;
+  return <NoteList notes={notes ?? []} onNoteClick={handleNoteClick} />;
 };
 export default NoteListContainer;

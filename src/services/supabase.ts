@@ -10,6 +10,7 @@ const supabaseClient = {
     const { data, error } = await supabase
       .from<T>(table)
       .select('*')
+      .order('created_at' as any, { ascending: false })
       .range(range.from, range.to);
     if (error) {
       throw new Error(error.message);

@@ -7,14 +7,17 @@ interface NoteDetailsProps {
   onChange?: (value: string) => void;
   onSave?: (done: boolean) => void;
 }
+
 const NoteDetails: React.FC<NoteDetailsProps> = (props) => {
   const {
     id, content, onChange, onSave,
   } = props;
+
   return (
     <RichMarkdownEditor
       id={id}
-      value={content}
+      autoFocus
+      defaultValue={content}
       onChange={(getValue) => onChange && onChange(getValue())}
       onSave={({ done }) => onSave && onSave(done)}
     />

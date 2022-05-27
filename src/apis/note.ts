@@ -1,5 +1,5 @@
 import { RealtimeSubscription } from '@supabase/supabase-js';
-import { Note } from 'models/Note';
+import { Note } from 'models';
 import supabaseClient from 'services/supabase';
 
 export const getNotes = async (range = { from: 0, to: 9 }): Promise<Note[]> => {
@@ -13,8 +13,8 @@ export const getNoteById = async (id: string): Promise<Note> => {
   return data || {};
 };
 
-export const createNote = async (note: Note): Promise<Note> => {
-  const data = await supabaseClient.create('note', note);
+export const createNote = async (content = ''): Promise<Note> => {
+  const data = await supabaseClient.create<Note>('note', { data: content } as Note);
   return data || {};
 };
 
@@ -31,4 +31,6 @@ export const deleteNoteById = async (id: string): Promise<Note> => {
   return data || {};
 };
 
-export const syncNoteById = async (id: string, callback: (e: Note) => void): Promise<RealtimeSubscription> => supabaseClient.subscribe<Note>(`note:id=eq.${id}`, (e) => callback(e.new), 'UPDATE');
+export const syncNoteById = async (id: string, callback: (e: Note) => void): Promise<RealtimeSubscription> => {
+  return supabaseClient.subscribe<Note>(`note:id=eq.${id}`, (e) => callback(e.new), 'UPDATE');
+};

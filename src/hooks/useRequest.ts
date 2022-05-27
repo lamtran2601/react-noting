@@ -1,32 +1,30 @@
 import { useEffect, useState } from 'react';
 
 interface UseRequestReturn<T> {
-  data: T;
+  data: T | null;
   error: any;
   loading: boolean;
 }
 
-const useRequest = <T>(service: () => Promise<T>): UseRequestReturn<T> => {
-  const [mounted, setMounted] = useState(false);
-  const [state, setState] = useState({
+const useRequest = <T>(service: () => Promise<T>, deps: any[] = []): UseRequestReturn<T> => {
+  const [state, setState] = useState<UseRequestReturn<T>>({
     data: null,
     error: null,
     loading: true,
   });
 
   useEffect(() => {
-    if (mounted) {
-      return;
+    if (!state.loading) {
+      setState((e) => ({ ...e, loading: true }));
     }
-    setMounted(true);
     service()
       .then((data) => {
-        setState((e: any) => ({ ...e, data, loading: false }));
+        setState({ error: null, data, loading: false });
       })
       .catch((error) => {
-        setState((e) => ({ ...e, error, loading: false }));
+        setState({ error, data: null, loading: false });
       });
-  }, [service]);
+  }, deps);
 
   return state as any;
 };
