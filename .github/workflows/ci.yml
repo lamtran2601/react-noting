@@ -11,9 +11,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - uses: Borales/actions-yarn@v2.3.0
+    - name: Install Package
+      uses: Borales/actions-yarn@v2.3.0
       with:
         cmd: install
-    - uses: Borales/actions-yarn@v2.3.0
+    - name: Lint
+      uses: Borales/actions-yarn@v2.3.0
       with:
         cmd: lint
