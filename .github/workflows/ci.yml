@@ -19,3 +19,8 @@ jobs:
       uses: Borales/actions-yarn@v2.3.0
       with:
         cmd: lint
+    - name: Deploy
+      uses: distributhor/workflow-webhook@v2
+      env:
+        webhook_url: ${{ secrets.WEBHOOK_URL }}
+        webhook_secret: ${{ secrets.WEBHOOK_SECRET }}
