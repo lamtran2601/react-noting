@@ -3,15 +3,30 @@ import { SupabaseEventTypes, SupabaseRealtimePayload } from '@supabase/supabase-
 
 const supabaseUrl = process.env.REACT_APP_SUPABASE_URL || 'https://supabase.co';
 const supabaseKey = process.env.REACT_APP_SUPABASE_ANON_KEY || 'anon-key';
-const supabase = createClient(supabaseUrl, supabaseKey);
+export const supabase = createClient(supabaseUrl, supabaseKey);
+
+export interface GetParams {
+  select?: string,
+  from?: number,
+  to?: number,
+  order?: {
+    column?: string,
+    order_options?: {
+      ascending?: boolean,
+    },
+  },
+}
 
 const supabaseClient = {
-  get: async <T = any>(table: string, range = { from: 0, to: 9 }) => {
+  get: async <T = any>(table: string, options: GetParams = {}) => {
+    const {
+      select = '*', from = 0, to = 20, order = { column: 'created_at', order_options: { ascending: false } },
+    } = options;
     const { data, error } = await supabase
       .from<T>(table)
-      .select('*')
-      .order('created_at' as any, { ascending: false })
-      .range(range.from, range.to);
+      .select(select)
+      .order(order.column as any, order.order_options)
+      .range(from, to);
     if (error) {
       throw new Error(error.message);
     }

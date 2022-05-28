@@ -1,10 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit';
-import { noteSlice } from 'features/Note';
+import { noteDetailsSlice, noteListSlice } from 'features/Note';
 
 export const store = configureStore({
   reducer: {
-    note: noteSlice,
+    noteList: noteListSlice,
+    nodeDetails: noteDetailsSlice,
   },
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(),
 });
 
 export type RootState = ReturnType<typeof store.getState>
