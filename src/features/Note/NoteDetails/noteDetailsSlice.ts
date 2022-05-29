@@ -6,13 +6,11 @@ import { noteService } from '..';
 
 export interface NoteDetailsState {
   data: Note;
-  loading: boolean;
   error: SerializedError | null;
 }
 
 const initialState: NoteDetailsState = {
   data: defaultNote,
-  loading: false,
   error: null,
 };
 
@@ -44,30 +42,22 @@ export const noteDetailsSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(getNoteById.pending, (state) => {
-        state.loading = true;
         state.data = defaultNote;
         state.error = null;
       })
       .addCase(getNoteById.fulfilled, (state, action) => {
-        state.loading = false;
         state.data = action.payload;
-        state.error = null;
       })
       .addCase(getNoteById.rejected, (state, action) => {
-        state.loading = false;
-        state.data = defaultNote;
         state.error = action.error;
       })
       .addCase(saveNote.pending, (state) => {
-        state.loading = true;
         state.error = null;
       })
-      .addCase(saveNote.fulfilled, (state) => {
-        state.loading = false;
-        state.error = null;
+      .addCase(saveNote.fulfilled, (state, action) => {
+        state.data = action.payload;
       })
       .addCase(saveNote.rejected, (state, action) => {
-        state.loading = false;
         state.error = action.error;
       });
   },

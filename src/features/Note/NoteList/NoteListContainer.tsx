@@ -17,7 +17,6 @@ const NoteListContainer = () => {
 
   const dispatch = useAppDispatch();
   const notes = useAppSelector((state) => state.noteList.data);
-  const loading = useAppSelector((state) => state.noteList.loading);
 
   const navigateToFirstNote = useCallback((noteList = notes) => {
     if (noteList.length > 0) {
@@ -58,7 +57,7 @@ const NoteListContainer = () => {
     [navigate],
   );
 
-  if (loading) {
+  if (notes.length === 0) {
     return <Loading />;
   }
 
