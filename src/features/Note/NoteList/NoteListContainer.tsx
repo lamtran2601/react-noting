@@ -31,7 +31,7 @@ const NoteListContainer = () => {
   const dispatch = useAppDispatch();
   const notes = useAppSelector((state) => state.noteList.data);
 
-  const LIMIT = 30;
+  const LIMIT = 50;
 
   const navigateToFirstNote = useCallback((noteList = notes) => {
     if (noteList.length > 0) {
