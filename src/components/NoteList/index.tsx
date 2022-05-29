@@ -1,17 +1,22 @@
 import './NoteList.scss';
 import { Tree } from 'antd';
 import { Note } from 'models';
-import React from 'react';
+import { forwardRef } from 'react';
 
 const NEW_NOTE_TITLE = 'Untitled';
 interface NoteListProps {
   notes: Note[];
   selectedKeys?: string[];
   onNoteClick: (id: string) => void;
+  height?: number;
+  scrollThreshold?: number;
+  onScrollEnd?: () => void;
 }
 
-const NoteList: React.FC<NoteListProps> = (props) => {
-  const { notes = [], onNoteClick, selectedKeys = [] } = props;
+const NoteList = (props: NoteListProps, ref: any) => {
+  const {
+    notes = [], onNoteClick, selectedKeys = [], height, onScrollEnd, scrollThreshold = 1,
+  } = props;
 
   const treeData = notes.map((note) => {
     const firstLine = note.data.split('\n')[0] ?? '#';
@@ -24,10 +29,18 @@ const NoteList: React.FC<NoteListProps> = (props) => {
 
   return (
     <Tree
+      ref={ref}
       treeData={treeData}
       selectedKeys={selectedKeys}
       onSelect={(_, info) => onNoteClick(info.node.key.toString())}
+      height={height}
+      onScroll={(e) => {
+        const { scrollTop, scrollHeight } = e.currentTarget;
+        if (height && scrollHeight - (scrollTop + height) <= scrollHeight * (1 - scrollThreshold)) {
+          onScrollEnd?.();
+        }
+      }}
     />
   );
 };
-export default NoteList;
+export default forwardRef(NoteList);

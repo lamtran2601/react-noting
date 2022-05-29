@@ -1,6 +1,11 @@
 import { Route, Routes } from 'react-router-dom';
 import Home from 'pages/Home';
 import { NoteDetailsContainer } from 'features/Note';
+import { message } from 'antd';
+
+message.config({
+  duration: 1,
+});
 
 const App = () => (
   <div className="App">

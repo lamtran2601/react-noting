@@ -30,7 +30,7 @@ const NoteDetailsContainer = () => {
   const handleChange = debounce(async (value: string) => {
     dispatch(updateNoteOnList({ ...note, data: value }));
     dispatch(saveNote({ id: note.id, content: value }));
-  }, 500);
+  }, 400);
 
   useEffect(() => {
     if (error) {
@@ -38,6 +38,14 @@ const NoteDetailsContainer = () => {
     }
   }, [error]);
 
-  return <NoteDetails key={note.id} id={note.id} content={note.data} onChange={handleChange} />;
+  return (
+    <div
+      style={{
+        padding: '16px 42px',
+      }}
+    >
+      <NoteDetails key={note.id} id={note.id} content={note.data} onChange={handleChange} />
+    </div>
+  );
 };
 export default NoteDetailsContainer;

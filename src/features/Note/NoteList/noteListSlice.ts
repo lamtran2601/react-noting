@@ -1,4 +1,4 @@
-import { defaultNote, Note } from 'models';
+import { Note } from 'models';
 import {
   createAsyncThunk, createSlice, PayloadAction, SerializedError,
 } from '@reduxjs/toolkit';
@@ -7,11 +7,13 @@ import { message } from 'antd';
 import noteService from '../noteService';
 
 interface NoteListState {
+  offset: number;
   data: Note[];
   error: SerializedError | null;
 }
 
 const initialState: NoteListState = {
+  offset: 0,
   data: [],
   error: null,
 };
@@ -54,11 +56,10 @@ export const noteListSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(getNotes.pending, (state) => {
-        state.data = [];
         state.error = null;
       })
       .addCase(getNotes.fulfilled, (state, action) => {
-        state.data = action.payload;
+        state.data = [...state.data, ...action.payload];
       })
       .addCase(getNotes.rejected, (state, action) => {
         state.error = action.error;
