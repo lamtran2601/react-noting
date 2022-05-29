@@ -14,9 +14,10 @@ const NoteList: React.FC<NoteListProps> = (props) => {
   const { notes = [], onNoteClick, selectedKeys = [] } = props;
 
   const treeData = notes.map((note) => {
-    const firstLine = note.data.split('\n')[0];
+    const firstLine = note.data.split('\n')[0] ?? '#';
+    const title = firstLine.slice(firstLine.lastIndexOf('#') + 1).trimStart();
     return {
-      title: note.data.length === 0 ? NEW_NOTE_TITLE : firstLine.slice(firstLine.lastIndexOf('#') + 1).trimStart(),
+      title: title.length === 0 ? NEW_NOTE_TITLE : title,
       key: note.id,
     };
   });

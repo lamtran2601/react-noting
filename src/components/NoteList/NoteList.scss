@@ -1,7 +1,12 @@
 .ant-tree-node-content-wrapper.ant-tree-node-content-wrapper-normal {
 	overflow: hidden;
-    width: 12rem;
-    height: 1rem;
+    width: 14rem;
+    height: 2rem;
+    font-size: 15px;
+    padding: 4px 8px;
     white-space: nowrap;
     text-overflow: ellipsis;
+    &.ant-tree-node-selected {
+        font-weight: bold;
+    }
 }

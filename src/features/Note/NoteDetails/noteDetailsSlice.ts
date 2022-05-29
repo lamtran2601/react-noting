@@ -59,12 +59,15 @@ export const noteDetailsSlice = createSlice({
         state.error = action.error;
       })
       .addCase(saveNote.pending, (state) => {
+        state.loading = true;
         state.error = null;
       })
       .addCase(saveNote.fulfilled, (state) => {
+        state.loading = false;
         state.error = null;
       })
       .addCase(saveNote.rejected, (state, action) => {
+        state.loading = false;
         state.error = action.error;
       });
   },

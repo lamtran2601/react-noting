@@ -1,4 +1,4 @@
-import { Alert, message } from 'antd';
+import { message } from 'antd';
 import NoteDetails from 'components/NoteDetails';
 import { useAppDispatch, useAppSelector } from 'hooks';
 import { debounce } from 'lodash';

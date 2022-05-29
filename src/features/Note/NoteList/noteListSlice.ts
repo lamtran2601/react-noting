@@ -33,6 +33,14 @@ export const createNote = createAsyncThunk('createNote', (content: string | unde
   }
 });
 
+export const deleteNoteById = createAsyncThunk('deleteNoteById', (id: string, thunkAPI) => {
+  try {
+    return noteService.deleteNoteById(id);
+  } catch (error) {
+    return thunkAPI.rejectWithValue(error);
+  }
+});
+
 export const noteListSlice = createSlice({
   name: 'noteList',
   initialState,
@@ -49,23 +57,32 @@ export const noteListSlice = createSlice({
       .addCase(getNotes.pending, (state) => {
         state.loading = true;
         state.data = [];
+        state.error = null;
       })
       .addCase(getNotes.fulfilled, (state, action) => {
         state.loading = false;
         state.data = action.payload;
+        state.error = null;
       })
       .addCase(getNotes.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error;
       })
       .addCase(createNote.pending, (state) => {
-        state.data = [defaultNote, ...state.data];
+        state.error = null;
       })
       .addCase(createNote.fulfilled, (state, action) => {
-        state.data[0] = action.payload;
+        state.data = [action.payload, ...state.data];
         state.error = null;
       })
       .addCase(createNote.rejected, (state, action) => {
+        state.error = action.error;
+      })
+      .addCase(deleteNoteById.pending, (state, action) => {
+        state.error = null;
+        state.data = state.data.filter((note) => note.id !== action.meta.arg);
+      })
+      .addCase(deleteNoteById.rejected, (state, action) => {
         state.error = action.error;
       });
   },

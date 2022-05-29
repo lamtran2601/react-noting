@@ -19,16 +19,33 @@ const NoteListContainer = () => {
   const notes = useAppSelector((state) => state.noteList.data);
   const loading = useAppSelector((state) => state.noteList.loading);
 
-  useEffect(() => {
-    dispatch(getNotes({}));
-  }, []);
+  const navigateToFirstNote = useCallback((noteList = notes) => {
+    if (noteList.length > 0) {
+      navigate(`/note/${noteList[0].id}`);
+    }
+  }, [notes]);
 
   const handleCreateNote = useCallback(async () => {
     const createAction = await dispatch(createNote());
     if (createAction.meta.requestStatus === 'fulfilled') {
       navigate(`note/${(createAction.payload as Note).id}`);
     }
-  }, [notes]);
+  }, []);
+
+  useEffect(() => {
+    dispatch(getNotes({})).then((action) => {
+      if (currentNoteId !== '') return;
+
+      if (action.meta.requestStatus === 'fulfilled') {
+        const data = action.payload as Note[];
+        if (data.length === 0) {
+          handleCreateNote();
+        } else {
+          navigateToFirstNote(data);
+        }
+      }
+    });
+  }, []);
 
   const handleNoteClick = useCallback(
     (id: string) => {
