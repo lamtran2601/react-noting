@@ -12,7 +12,8 @@ export default {
     return data || {};
   },
   createNote: async (content = ''): Promise<Note> => {
-    const data = await supabaseClient.create<Note>('note', { data: content } as Note);
+    const user = await supabaseClient.getUser();
+    const data = await supabaseClient.create<Note>('note', { data: content, owner_id: user?.id } as Note);
     return data || {};
   },
   updateNote: async (

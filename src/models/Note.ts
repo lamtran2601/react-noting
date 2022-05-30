@@ -4,6 +4,7 @@ export interface Note {
   data: string;
   created_at?: Date;
   updated_at?: Date;
+  owner_id?: string;
 }
 
 export const defaultNote: Note = {

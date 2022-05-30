@@ -44,7 +44,7 @@ const NoteDetailsContainer = () => {
         padding: '16px 42px',
       }}
     >
-      <NoteDetails key={note.id} id={note.id} content={note.data} onChange={handleChange} />
+      <NoteDetails key={note.id} id={note.id} content={note.data ?? ''} onChange={handleChange} />
     </div>
   );
 };

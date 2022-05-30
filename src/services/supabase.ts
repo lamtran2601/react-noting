@@ -17,7 +17,7 @@ export interface GetParams {
   },
 }
 
-const supabaseClient = {
+const supabaseClientAPI = {
   get: async <T = any>(table: string, options: GetParams = {}) => {
     const {
       select = '*', from = 0, to = 20, order = { column: 'created_at', order_options: { ascending: false } },
@@ -88,4 +88,31 @@ const supabaseClient = {
     on: SupabaseEventTypes = '*',
   ) => supabase.from<T>(table).on(on, callback).subscribe(),
 };
-export default supabaseClient;
+
+const supabaseAuth = {
+  signUp: async (email: string, password: string) => {
+    const { user, session, error } = await supabase.auth.signUp({ email, password });
+    if (error) {
+      throw new Error(error.message);
+    }
+    return { user, session };
+  },
+  signIn: async (email: string, password: string) => {
+    const { user, session, error } = await supabase.auth.signIn({ email, password });
+    if (error) {
+      throw new Error(error.message);
+    }
+    return { user, session };
+  },
+  signOut: async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      throw new Error(error.message);
+    }
+  },
+  getUser: async () => {
+    return supabase.auth.user();
+  },
+};
+
+export default { ...supabaseClientAPI, ...supabaseAuth };

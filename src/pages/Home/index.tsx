@@ -1,8 +1,11 @@
 import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
-import { Button, Layout, Space } from 'antd';
+import {
+  Button, Layout, Row, Space,
+} from 'antd';
 import { Header } from 'antd/lib/layout/layout';
 import { NoteListContainer } from 'features/Note';
 import NoteHeaderContainer from 'features/Note/NoteHeader/NoteHeaderContainer';
+import UserHeaderContainer from 'features/User/UserHeaderContainer';
 import { useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import HomeProvider from './HomeProvider';
@@ -41,10 +44,13 @@ const Home = () => {
             padding: '0px 16px',
           }}
           >
-            <Space size={40}>
-              <Button icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />} onClick={() => setCollapsed(!collapsed)} />
-              <NoteHeaderContainer />
-            </Space>
+            <Row justify="space-between">
+              <Space size={40}>
+                <Button icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />} onClick={() => setCollapsed(!collapsed)} />
+                <NoteHeaderContainer />
+              </Space>
+              <UserHeaderContainer />
+            </Row>
           </Header>
           <Content
             style={{
