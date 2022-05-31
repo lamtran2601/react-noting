@@ -1,10 +1,10 @@
-import { CopyOutlined, DeleteOutlined } from '@ant-design/icons';
-import { Button, Popconfirm, Space } from 'antd';
-import { useAppDispatch, useAppSelector } from 'hooks';
 import { useCallback, useContext } from 'react';
 import { useParams } from 'react-router-dom';
-import NoteContext from '../context';
-import { deleteNoteById } from '../NoteList/noteListSlice';
+import { Button, Popconfirm, Space } from 'antd';
+import { CopyOutlined, DeleteOutlined } from '@ant-design/icons';
+import { NoteContext } from 'contexts';
+import { useAppDispatch, useAppSelector } from 'hooks';
+import { deleteNoteById } from '..';
 
 const NoteHeaderContainer = () => {
   const { id } = useParams();

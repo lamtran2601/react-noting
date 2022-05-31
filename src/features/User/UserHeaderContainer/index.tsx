@@ -1,30 +1,21 @@
 import { UserOutlined } from '@ant-design/icons';
-import { User } from '@supabase/supabase-js';
 import {
   Button, Col, message, Modal, Row, Space,
 } from 'antd';
 import SignIn from 'components/SignIn';
-import { useEffect, useState } from 'react';
+import { UserContext } from 'contexts';
+import { useContext, useState } from 'react';
 import supabase from 'services/supabase';
 
 const UserHeaderContainer = () => {
   const [visibleModal, setVisibleModal] = useState(false);
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
-
-  useEffect(() => {
-    supabase.getUser().then((res) => {
-      setCurrentUser(res);
-    });
-  }, []);
+  const { user } = useContext(UserContext);
 
   const handleSignIn = async (payload: { email: string, password: string }) => {
     const { email, password } = payload;
     try {
-      const { user } = await supabase.signIn(email, password);
-      if (user) {
-        setCurrentUser(user);
-        setVisibleModal(false);
-      }
+      await supabase.signIn(email, password);
+      setVisibleModal(false);
     } catch (error) {
       message.error((error as Error).message);
     }
@@ -33,11 +24,8 @@ const UserHeaderContainer = () => {
   const handleSignUp = async (payload: { email: string, password: string }) => {
     const { email, password } = payload;
     try {
-      const { user } = await supabase.signUp(email, password);
-      if (user) {
-        setCurrentUser(user);
-        setVisibleModal(false);
-      }
+      await supabase.signUp(email, password);
+      setVisibleModal(false);
     } catch (error) {
       message.error((error as Error).message);
     }
@@ -48,7 +36,7 @@ const UserHeaderContainer = () => {
       <Row align="middle">
         <Space>
           <Button type="default" shape="circle" icon={<UserOutlined />} onClick={() => setVisibleModal(true)} />
-          {currentUser?.email}
+          {user?.email}
         </Space>
       </Row>
       <Modal
@@ -66,4 +54,5 @@ const UserHeaderContainer = () => {
     </>
   );
 };
+
 export default UserHeaderContainer;

@@ -1,4 +1,4 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient, User } from '@supabase/supabase-js';
 import { SupabaseEventTypes, SupabaseRealtimePayload } from '@supabase/supabase-js/dist/module/lib/types';
 
 const supabaseUrl = process.env.REACT_APP_SUPABASE_URL || 'https://supabase.co';
@@ -112,6 +112,9 @@ const supabaseAuth = {
   },
   getUser: async () => {
     return supabase.auth.user();
+  },
+  onUserChange: async (callback: (user: User | null | undefined) => void) => {
+    return supabase.auth.onAuthStateChange((_, session) => callback(session?.user));
   },
 };
 

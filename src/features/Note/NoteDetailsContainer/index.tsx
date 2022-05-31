@@ -1,12 +1,11 @@
-import { message } from 'antd';
-import NoteDetails from 'components/NoteDetails';
-import { useAppDispatch, useAppSelector } from 'hooks';
-import { debounce } from 'lodash';
-import { defaultNote } from 'models';
 import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { updateNoteOnList } from '../NoteList/noteListSlice';
-import { getNoteById, saveNote } from './noteDetailsSlice';
+import { message } from 'antd';
+import { debounce } from 'lodash';
+import { defaultNote } from 'models';
+import { useAppDispatch, useAppSelector } from 'hooks';
+import NoteDetails from 'components/NoteDetails';
+import { updateNoteOnList, getNoteById, saveNote } from '..';
 
 const NoteDetailsContainer = () => {
   const { id: paramsId = '' } = useParams();
