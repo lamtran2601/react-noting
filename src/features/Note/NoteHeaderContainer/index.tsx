@@ -1,7 +1,9 @@
-import { useCallback, useContext } from 'react';
+import {
+  useCallback, useContext, useEffect, useState,
+} from 'react';
 import { useParams } from 'react-router-dom';
 import { Button, Popconfirm, Space } from 'antd';
-import { CopyOutlined, DeleteOutlined } from '@ant-design/icons';
+import { CheckCircleTwoTone, CopyOutlined, DeleteOutlined } from '@ant-design/icons';
 import { NoteContext } from 'contexts';
 import { useAppDispatch, useAppSelector } from 'hooks';
 import { deleteNoteById } from '..';
@@ -10,9 +12,15 @@ const NoteHeaderContainer = () => {
   const { id } = useParams();
   const dispatch = useAppDispatch();
   const { createNote, navigateToNote } = useContext(NoteContext);
+  const [isSynced, setIsSynced] = useState(true);
 
   const notes = useAppSelector((state) => state.noteList.data);
   const noteDetails = useAppSelector((state) => state.nodeDetails.data);
+  const noteInList = notes.find((e) => e.id === noteDetails.id);
+
+  useEffect(() => {
+    setIsSynced(!noteInList || noteInList.data === noteDetails.data);
+  }, [noteInList]);
 
   const handleDeleteNote = useCallback(async () => {
     if (!id) return;
@@ -34,6 +42,7 @@ const NoteHeaderContainer = () => {
 
   return (
     <Space>
+      <CheckCircleTwoTone twoToneColor={isSynced ? '#52c41a' : '#eb2f96'} />
       <Button type="dashed" shape="round" icon={<CopyOutlined />} onClick={handleDuplicateClick}>Duplicate</Button>
       <Popconfirm
         title="Are you sure delete this note?"

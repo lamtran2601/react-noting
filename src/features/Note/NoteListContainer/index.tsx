@@ -14,7 +14,6 @@ const NEW_NOTE = {
 
 const NoteListContainer = () => {
   const { id: currentNoteId = '' } = useParams();
-  const ref = useRef<HTMLDivElement>(null);
   const treeRef = useRef<any>(null);
 
   const {
@@ -43,7 +42,6 @@ const NoteListContainer = () => {
 
   return (
     <div
-      ref={ref}
       style={{ padding: '1rem 0' }}
     >
       <NoteList

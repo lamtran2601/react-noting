@@ -4,6 +4,7 @@ import {
 } from '@reduxjs/toolkit';
 import supabaseClient, { GetParams } from 'services/supabase';
 import { message } from 'antd';
+import { debounce } from 'lodash';
 import noteService from '../noteService';
 
 interface NoteListState {
@@ -42,6 +43,20 @@ export const deleteNoteById = createAsyncThunk('deleteNoteById', (id: string, th
   }
 });
 
+export const syncUpdateNotes = createAsyncThunk('syncUpdateNotes', (_, thunkAPI) => {
+  try {
+    const handleUpdate = debounce((note: Note) => {
+      // eslint-disable-next-line @typescript-eslint/no-use-before-define
+      thunkAPI.dispatch(noteListSlice.actions.updateNoteOnList(note));
+    }, 500);
+    return noteService.syncUpdateNote((note) => {
+      handleUpdate(note);
+    });
+  } catch (error) {
+    return thunkAPI.rejectWithValue(error);
+  }
+});
+
 export const noteListSlice = createSlice({
   name: 'noteList',
   initialState,
@@ -51,6 +66,12 @@ export const noteListSlice = createSlice({
     },
     updateNoteOnList: (state: NoteListState, action: PayloadAction<Note>) => {
       state.data = state.data.map((note) => (note.id === action.payload.id ? action.payload : note));
+    },
+    updateNotes: (state: NoteListState, action: PayloadAction<Note[]>) => {
+      state.data = state.data.map((note) => {
+        const newNote = action.payload.find((n) => n.id === note.id);
+        return newNote ?? note;
+      });
     },
   },
   extraReducers: (builder) => {
@@ -86,6 +107,6 @@ export const noteListSlice = createSlice({
   },
 });
 
-export const { setNotes, updateNoteOnList } = noteListSlice.actions;
+export const { setNotes, updateNoteOnList, updateNotes } = noteListSlice.actions;
 
 export default noteListSlice.reducer;

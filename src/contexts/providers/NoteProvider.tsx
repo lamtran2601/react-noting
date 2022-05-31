@@ -1,5 +1,7 @@
 import { NoteContext, NoteContextProps, UserContext } from 'contexts';
-import { createNote, getNotes, setNotes } from 'features/Note';
+import {
+  createNote, getNotes, setNotes, syncUpdateNotes,
+} from 'features/Note';
 import { useAppDispatch, useAppSelector, useInfinityPagination } from 'hooks';
 import { Note } from 'models';
 import {
@@ -32,6 +34,7 @@ const NoteProvider = (props: {children: ReactNode}) => {
   // TODO: subscribe note list
   useEffect(() => {
     dispatch(setNotes([]));
+    dispatch(syncUpdateNotes());
     handleGetNotes().then((action) => {
       if (action.meta.requestStatus === 'fulfilled') {
         const data = action.payload as Note[];

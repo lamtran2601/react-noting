@@ -11,6 +11,7 @@ const NoteDetailsContainer = () => {
   const { id: paramsId = '' } = useParams();
   const dispatch = useAppDispatch();
   const { data: noteList } = useAppSelector((state) => state.noteList);
+  const noteInList = noteList.find((e) => e.id === paramsId);
 
   useEffect(() => {
     if (paramsId !== '') {
@@ -21,15 +22,19 @@ const NoteDetailsContainer = () => {
   const noteDetails = useAppSelector((state) => state.nodeDetails.data);
   const error = useAppSelector((state) => state.nodeDetails.error);
 
-  const note = noteDetails?.id === paramsId ? noteDetails : noteList.find((e) => e.id === paramsId) ?? defaultNote;
+  const note = noteDetails?.id === paramsId ? noteDetails : noteInList ?? defaultNote;
 
   // TODO: handle cursor when receive new note
   // const { data: newNote } = useSubscription<Note>((callback) => syncNoteById(id, callback));
 
-  const handleChange = debounce(async (value: string) => {
-    dispatch(updateNoteOnList({ ...note, data: value }));
+  const handleSave = debounce((value: string) => {
     dispatch(saveNote({ id: note.id, content: value }));
-  }, 400);
+  }, 200);
+
+  const handleChange = (value: string) => {
+    dispatch(updateNoteOnList({ ...note, data: value }));
+    handleSave(value);
+  };
 
   useEffect(() => {
     if (error) {

@@ -27,6 +27,9 @@ export default {
     const data = await supabaseClient.delete('note', id);
     return data || {};
   },
+  syncUpdateNote: async (callback: (e: Note) => void): Promise<RealtimeSubscription> => {
+    return supabaseClient.subscribe<Note>('note', (e) => callback(e.new), 'UPDATE');
+  },
   syncNoteById: async (id: string, callback: (e: Note) => void): Promise<RealtimeSubscription> => {
     return supabaseClient.subscribe<Note>(`note:id=eq.${id}`, (e) => callback(e.new), 'UPDATE');
   },
