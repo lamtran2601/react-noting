@@ -1,4 +1,4 @@
-import { RealtimeSubscription } from '@supabase/supabase-js';
+import { RealtimeSubscription, SupabaseRealtimePayload } from '@supabase/supabase-js';
 import { Note } from 'models';
 import supabaseClient, { GetParams } from 'services/supabase';
 
@@ -12,7 +12,7 @@ export default {
     return data || {};
   },
   createNote: async (content = ''): Promise<Note> => {
-    const user = await supabaseClient.getUser();
+    const user = supabaseClient.auth.user();
     const data = await supabaseClient.create<Note>('note', { data: content, owner_id: user?.id } as Note);
     return data || {};
   },
@@ -27,10 +27,8 @@ export default {
     const data = await supabaseClient.delete('note', id);
     return data || {};
   },
-  syncUpdateNote: async (callback: (e: Note) => void): Promise<RealtimeSubscription> => {
-    return supabaseClient.subscribe<Note>('note', (e) => callback(e.new), 'UPDATE');
-  },
+  syncUpdateNote: (callback: (payload: SupabaseRealtimePayload<Note>) => void) => supabaseClient.subscribe<Note>('note', callback, '*'),
   syncNoteById: async (id: string, callback: (e: Note) => void): Promise<RealtimeSubscription> => {
-    return supabaseClient.subscribe<Note>(`note:id=eq.${id}`, (e) => callback(e.new), 'UPDATE');
+    return supabaseClient.subscribe<Note>(`note:id=eq.${id}`, (e) => callback(e.new), '*');
   },
 };

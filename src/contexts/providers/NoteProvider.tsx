@@ -1,26 +1,27 @@
 import { NoteContext, NoteContextProps, UserContext } from 'contexts';
 import {
-  createNote, getNotes, setNotes, syncUpdateNotes,
+  createNote, getNotes, syncUpdateNotes,
 } from 'features/Note';
-import { useAppDispatch, useAppSelector, useInfinityPagination } from 'hooks';
+import { useAppDispatch, useAppSelector } from 'hooks';
 import { Note } from 'models';
 import {
   ReactNode, useCallback, useContext, useEffect, useMemo, useRef,
 } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const NoteProvider = (props: {children: ReactNode}) => {
   const { children } = props;
+  const { id: currentNoteId = '' } = useParams();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const scrollTo = useRef<any>();
 
   const { user } = useContext(UserContext);
-  const notes = useAppSelector((state) => state.noteList.data);
+  const noteDetails = useAppSelector((state) => state.nodeDetails.data);
 
-  const LIMIT = 50;
+  const LIMIT = 20;
 
-  const handleGetNotes = useCallback(async (offset = 0) => dispatch(getNotes({
+  const handleGetNotes = useCallback((offset = 0) => dispatch(getNotes({
     from: offset,
     to: offset + LIMIT - 1,
   })), []);
@@ -31,25 +32,15 @@ const NoteProvider = (props: {children: ReactNode}) => {
     if (isTransitionTo) scrollTo.current?.(id);
   };
 
-  // TODO: subscribe note list
   useEffect(() => {
-    dispatch(setNotes([]));
     dispatch(syncUpdateNotes());
-    handleGetNotes().then((action) => {
-      if (action.meta.requestStatus === 'fulfilled') {
-        const data = action.payload as Note[];
-        if (data.length === 0) {
-          createNote();
-        } else {
-          navigateToNote(data[0].id);
-        }
-      }
-    });
   }, [user]);
 
-  const {
-    onLoadMore: handleGetMoreNotes,
-  } = useInfinityPagination({ dataLength: notes.length, next: handleGetNotes });
+  useEffect(() => {
+    if (currentNoteId !== '' && noteDetails.id !== '' && currentNoteId !== noteDetails.id) {
+      navigateToNote(currentNoteId);
+    }
+  }, [currentNoteId, noteDetails]);
 
   const handleCreateNote = useCallback(async (content = '') => {
     const createAction = await dispatch(createNote(content));
@@ -65,7 +56,7 @@ const NoteProvider = (props: {children: ReactNode}) => {
     setSrollTo: (callback) => {
       scrollTo.current = callback;
     },
-    handleGetMoreNotes: () => handleGetMoreNotes(),
+    handleGetNotes,
   }), []);
 
   return (

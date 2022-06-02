@@ -36,7 +36,7 @@ const NoteList = (props: NoteListProps, ref: any) => {
       height={height}
       onScroll={(e) => {
         const { scrollTop, scrollHeight } = e.currentTarget;
-        if (height && scrollHeight - (scrollTop + height) <= scrollHeight * (1 - scrollThreshold)) {
+        if (height && scrollHeight - (scrollTop + height) <= height * (1 - scrollThreshold)) {
           onScrollEnd?.();
         }
       }}

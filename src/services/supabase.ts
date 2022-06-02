@@ -1,9 +1,11 @@
-import { createClient, User } from '@supabase/supabase-js';
+import {
+  AuthChangeEvent, createClient, Session, User,
+} from '@supabase/supabase-js';
 import { SupabaseEventTypes, SupabaseRealtimePayload } from '@supabase/supabase-js/dist/module/lib/types';
 
 const supabaseUrl = process.env.REACT_APP_SUPABASE_URL || 'https://supabase.co';
 const supabaseKey = process.env.REACT_APP_SUPABASE_ANON_KEY || 'anon-key';
-export const supabase = createClient(supabaseUrl, supabaseKey);
+export const supabase = createClient(supabaseUrl, supabaseKey, { autoRefreshToken: true, persistSession: true });
 
 export interface GetParams {
   select?: string,
@@ -25,7 +27,7 @@ const supabaseClientAPI = {
     const { data, error } = await supabase
       .from<T>(table)
       .select(select)
-      .order(order.column as any, order.order_options)
+      .order(order.column ?? 'created_at' as any, order.order_options ?? { ascending: false })
       .range(from, to);
     if (error) {
       throw new Error(error.message);
@@ -110,12 +112,6 @@ const supabaseAuth = {
       throw new Error(error.message);
     }
   },
-  getUser: async () => {
-    return supabase.auth.user();
-  },
-  onUserChange: async (callback: (user: User | null | undefined) => void) => {
-    return supabase.auth.onAuthStateChange((_, session) => callback(session?.user));
-  },
 };
 
-export default { ...supabaseClientAPI, ...supabaseAuth };
+export default { ...supabaseClientAPI, ...supabaseAuth, auth: supabase.auth };

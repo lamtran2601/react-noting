@@ -1,27 +1,30 @@
+/* eslint-disable @typescript-eslint/no-use-before-define */
 import { Note } from 'models';
 import {
   createAsyncThunk, createSlice, PayloadAction, SerializedError,
 } from '@reduxjs/toolkit';
 import supabaseClient, { GetParams } from 'services/supabase';
 import { message } from 'antd';
-import { debounce } from 'lodash';
 import noteService from '../noteService';
 
 interface NoteListState {
-  offset: number;
   data: Note[];
   error: SerializedError | null;
 }
 
 const initialState: NoteListState = {
-  offset: 0,
   data: [],
   error: null,
 };
 
 export const getNotes = createAsyncThunk('getNotes', (params: GetParams, thunkAPI) => {
   try {
-    return supabaseClient.get<Note>('note', params);
+    return supabaseClient.get<Note>('note', {
+      order: {
+        column: 'updated_at',
+      },
+      ...params,
+    });
   } catch (error) {
     return thunkAPI.rejectWithValue(error);
   }
@@ -45,12 +48,18 @@ export const deleteNoteById = createAsyncThunk('deleteNoteById', (id: string, th
 
 export const syncUpdateNotes = createAsyncThunk('syncUpdateNotes', (_, thunkAPI) => {
   try {
-    const handleUpdate = debounce((note: Note) => {
-      // eslint-disable-next-line @typescript-eslint/no-use-before-define
-      thunkAPI.dispatch(noteListSlice.actions.updateNoteOnList(note));
-    }, 500);
-    return noteService.syncUpdateNote((note) => {
-      handleUpdate(note);
+    return noteService.syncUpdateNote((payload) => {
+      const note = payload.new;
+      switch (payload.eventType) {
+        case 'INSERT':
+        case 'UPDATE':
+          thunkAPI.dispatch(noteListSlice.actions.upsertNote(note));
+          break;
+        case 'DELETE':
+          thunkAPI.dispatch(noteListSlice.actions.deleteNoteOnList(note.id));
+          break;
+        default:
+      }
     });
   } catch (error) {
     return thunkAPI.rejectWithValue(error);
@@ -61,17 +70,24 @@ export const noteListSlice = createSlice({
   name: 'noteList',
   initialState,
   reducers: {
+    upsertNote: (state: NoteListState, action: PayloadAction<Note>) => {
+      if (state.data.find((e) => e.id === action.payload.id)) {
+        state.data = state.data.map((e) => (e.id === action.payload.id ? action.payload : e));
+      } else {
+        state.data.push(action.payload);
+      }
+    },
     setNotes: (state: NoteListState, action: PayloadAction<Note[]>) => {
       state.data = action.payload;
-    },
-    updateNoteOnList: (state: NoteListState, action: PayloadAction<Note>) => {
-      state.data = state.data.map((note) => (note.id === action.payload.id ? action.payload : note));
     },
     updateNotes: (state: NoteListState, action: PayloadAction<Note[]>) => {
       state.data = state.data.map((note) => {
         const newNote = action.payload.find((n) => n.id === note.id);
         return newNote ?? note;
       });
+    },
+    deleteNoteOnList: (state: NoteListState, action: PayloadAction<string>) => {
+      state.data = state.data.filter((note) => note.id !== action.payload);
     },
   },
   extraReducers: (builder) => {
@@ -107,6 +123,8 @@ export const noteListSlice = createSlice({
   },
 });
 
-export const { setNotes, updateNoteOnList, updateNotes } = noteListSlice.actions;
+export const {
+  upsertNote, setNotes, updateNotes, deleteNoteOnList,
+} = noteListSlice.actions;
 
 export default noteListSlice.reducer;

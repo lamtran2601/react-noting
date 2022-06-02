@@ -2,31 +2,32 @@ import { useRef, useCallback } from 'react';
 
 interface PaginationProps {
   dataLength: number;
-  next: (_: number) => void;
+  next: (offset: any) => Promise<any>;
 }
 
 interface PaginationState {
-  offset: number;
-  onLoadMore: (onDone?: () => void) => void;
+  onLoadMore: () => void;
 }
-
 const useInfinityPagination = (props: PaginationProps): PaginationState => {
   const {
     dataLength, next,
   } = props;
-  const offset = useRef(0);
 
-  const handleLoadMore = useCallback((onDone?: () => void) => {
-    if (dataLength < offset.current) {
+  const offset = useRef(dataLength);
+  const isLoading = useRef(false);
+
+  const handleLoadMore = useCallback(() => {
+    if (isLoading.current || dataLength < offset.current) {
       return;
     }
-    next(offset.current);
-    offset.current = dataLength;
-    onDone?.();
+    isLoading.current = true;
+    next(dataLength).finally(() => {
+      offset.current = dataLength + 1;
+      isLoading.current = false;
+    });
   }, [dataLength]);
 
   return {
-    offset: offset.current,
     onLoadMore: handleLoadMore,
   };
 };

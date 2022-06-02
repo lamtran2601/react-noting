@@ -3,11 +3,12 @@ import {
 } from 'react';
 import { useParams } from 'react-router-dom';
 import { NoteContext } from 'contexts';
-import { useAppSelector } from 'hooks';
-import Loading from 'components/Loading';
+import { useAppDispatch, useAppSelector, useInfinityPagination } from 'hooks';
 import NoteList from 'components/NoteList';
+import { Note } from 'models';
+import { setNotes } from 'features/Note';
 
-const NEW_NOTE = {
+const NEW_NOTE: Note = {
   id: '',
   data: 'New note',
 };
@@ -15,9 +16,10 @@ const NEW_NOTE = {
 const NoteListContainer = () => {
   const { id: currentNoteId = '' } = useParams();
   const treeRef = useRef<any>(null);
+  const dispatch = useAppDispatch();
 
   const {
-    createNote, navigateToNote, setSrollTo, handleGetMoreNotes,
+    createNote, navigateToNote, setSrollTo, handleGetNotes,
   } = useContext(NoteContext);
 
   useEffect(() => {
@@ -28,6 +30,15 @@ const NoteListContainer = () => {
 
   const notes = useAppSelector((state) => state.noteList.data);
 
+  const {
+    onLoadMore: handleGetMoreNotes,
+  } = useInfinityPagination({ dataLength: notes.length, next: handleGetNotes });
+
+  useEffect(() => {
+    dispatch(setNotes([]));
+    handleGetMoreNotes();
+  }, []);
+
   const handleNoteClick = useCallback((id: string) => {
     if (id === '') {
       return createNote();
@@ -36,17 +47,13 @@ const NoteListContainer = () => {
     return navigateToNote(id, { isTransitionTo: true });
   }, [navigateToNote]);
 
-  if (notes.length === 0) {
-    return <Loading />;
-  }
-
   return (
     <div
       style={{ padding: '1rem 0' }}
     >
       <NoteList
         ref={treeRef}
-        notes={[NEW_NOTE, ...notes]}
+        notes={[NEW_NOTE, ...[...notes].sort((a, b) => (new Date(b.updated_at ?? 0)).getTime() - (new Date(a.updated_at ?? 0)).getTime())]}
         selectedKeys={[currentNoteId]}
         onNoteClick={handleNoteClick}
         height={window.innerHeight - 42}

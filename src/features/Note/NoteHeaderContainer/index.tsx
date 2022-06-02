@@ -1,15 +1,20 @@
 import {
   useCallback, useContext, useEffect, useState,
 } from 'react';
-import { useParams } from 'react-router-dom';
-import { Button, Popconfirm, Space } from 'antd';
-import { CheckCircleTwoTone, CopyOutlined, DeleteOutlined } from '@ant-design/icons';
+import { useNavigate, useParams } from 'react-router-dom';
+import {
+  Button, Popconfirm, Row, Space,
+} from 'antd';
+import {
+  CloudTwoTone, CopyOutlined, DeleteOutlined,
+} from '@ant-design/icons';
 import { NoteContext } from 'contexts';
 import { useAppDispatch, useAppSelector } from 'hooks';
 import { deleteNoteById } from '..';
 
 const NoteHeaderContainer = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { createNote, navigateToNote } = useContext(NoteContext);
   const [isSynced, setIsSynced] = useState(true);
@@ -19,8 +24,8 @@ const NoteHeaderContainer = () => {
   const noteInList = notes.find((e) => e.id === noteDetails.id);
 
   useEffect(() => {
-    setIsSynced(!noteInList || noteInList.data === noteDetails.data);
-  }, [noteInList]);
+    setIsSynced(!noteDetails || !noteInList || noteInList.data === noteDetails.data);
+  }, [noteInList, noteDetails]);
 
   const handleDeleteNote = useCallback(async () => {
     if (!id) return;
@@ -42,7 +47,13 @@ const NoteHeaderContainer = () => {
 
   return (
     <Space>
-      <CheckCircleTwoTone twoToneColor={isSynced ? '#52c41a' : '#eb2f96'} />
+      <Row>
+        <CloudTwoTone
+          style={{ fontSize: '1.25rem' }}
+          twoToneColor={isSynced ? '#52c41a' : '#eb2f96'}
+          onClick={() => navigate(`/note/${id}`)}
+        />
+      </Row>
       <Button type="dashed" shape="round" icon={<CopyOutlined />} onClick={handleDuplicateClick}>Duplicate</Button>
       <Popconfirm
         title="Are you sure delete this note?"

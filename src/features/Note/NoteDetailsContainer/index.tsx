@@ -1,40 +1,42 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { message } from 'antd';
 import { debounce } from 'lodash';
 import { defaultNote } from 'models';
 import { useAppDispatch, useAppSelector } from 'hooks';
 import NoteDetails from 'components/NoteDetails';
-import { updateNoteOnList, getNoteById, saveNote } from '..';
+import {
+  upsertNote, saveNote, setNoteDetails,
+} from 'features/Note';
 
 const NoteDetailsContainer = () => {
   const { id: paramsId = '' } = useParams();
+
+  const [isFocus, setIsFocus] = useState(false);
+
   const dispatch = useAppDispatch();
-  const { data: noteList } = useAppSelector((state) => state.noteList);
+  const noteList = useAppSelector((state) => state.noteList.data);
   const noteInList = noteList.find((e) => e.id === paramsId);
+  const error = useAppSelector((state) => state.nodeDetails.error);
+  const [note, setNote] = useState(noteInList || defaultNote);
 
   useEffect(() => {
-    if (paramsId !== '') {
-      dispatch(getNoteById(paramsId));
+    if (!isFocus) {
+      setNote(noteInList || defaultNote);
+      dispatch(setNoteDetails(noteInList || defaultNote));
     }
-  }, [paramsId]);
+  }, [isFocus, noteInList]);
 
-  const noteDetails = useAppSelector((state) => state.nodeDetails.data);
-  const error = useAppSelector((state) => state.nodeDetails.error);
-
-  const note = noteDetails?.id === paramsId ? noteDetails : noteInList ?? defaultNote;
-
-  // TODO: handle cursor when receive new note
-  // const { data: newNote } = useSubscription<Note>((callback) => syncNoteById(id, callback));
-
-  const handleSave = debounce((value: string) => {
+  const handleSave = useCallback(debounce((value: string) => {
     dispatch(saveNote({ id: note.id, content: value }));
-  }, 200);
+  }, 300), [note]);
 
-  const handleChange = (value: string) => {
-    dispatch(updateNoteOnList({ ...note, data: value }));
+  const handleChange = useCallback((value: string) => {
+    const newNote = { id: note.id, data: value, updated_at: new Date() };
+    dispatch(setNoteDetails(newNote));
+    dispatch(upsertNote(newNote));
     handleSave(value);
-  };
+  }, [note, noteInList]);
 
   useEffect(() => {
     if (error) {
@@ -48,7 +50,15 @@ const NoteDetailsContainer = () => {
         padding: '16px 42px',
       }}
     >
-      <NoteDetails key={note.id} id={note.id} content={note.data ?? ''} onChange={handleChange} />
+      <NoteDetails
+        key={note.id}
+        id={note.id}
+        defaultValue={note.data ?? ''}
+        value={!isFocus ? note.data ?? '' : ''}
+        onChange={handleChange}
+        onFocus={() => setIsFocus(true)}
+        onBlur={() => setIsFocus(false)}
+      />
     </div>
   );
 };
