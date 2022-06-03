@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import dayjs from 'dayjs';
 import {
   Divider,
-  message, Row, Space, Typography,
+  message, Typography,
 } from 'antd';
 import { debounce } from 'lodash';
 import { defaultNote } from 'models';

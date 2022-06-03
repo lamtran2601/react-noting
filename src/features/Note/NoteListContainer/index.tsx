@@ -7,8 +7,6 @@ import { useAppDispatch, useAppSelector, useInfinityPagination } from 'hooks';
 import NoteList from 'components/NoteList';
 import { Note } from 'models';
 import { getNotes, setNotes } from 'features/Note';
-import Loading from 'components/Loading';
-import { Col, Row } from 'antd';
 
 const NEW_NOTE: Note = {
   id: '',
@@ -23,9 +21,9 @@ const NoteListContainer = () => {
   const treeRef = useRef<any>(null);
   const dispatch = useAppDispatch();
 
-  const [expandedKeys, setExpandedKeys] = useState([MY_NOTE_KEY]);
+  const [expandedKeys, setExpandedKeys] = useState([MY_NOTE_KEY, PUBLIC_KEY]);
 
-  const LIMIT = 40;
+  const LIMIT = 50;
   const handleGetNotes = useCallback((offset = 0, limit = LIMIT) => dispatch(getNotes({
     from: offset,
     to: offset + limit - 1,

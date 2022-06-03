@@ -1,6 +1,6 @@
 import { NoteContext, NoteContextProps, UserContext } from 'contexts';
 import {
-  createNote, getNotes, setNotes, syncUpdateNotes,
+  createNote, getNotes, syncUpdateNotes,
 } from 'features/Note';
 import { useAppDispatch, useAppSelector } from 'hooks';
 import { Note } from 'models';
@@ -38,7 +38,7 @@ const NoteProvider = (props: {children: ReactNode}) => {
 
   useEffect(() => {
     if (currentNoteId !== '' && noteDetails.id !== '' && currentNoteId !== noteDetails.id) {
-      navigateToNote(currentNoteId);
+      navigateToNote(currentNoteId, { isTransitionTo: true });
     }
   }, [currentNoteId, noteDetails]);
 

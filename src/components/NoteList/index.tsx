@@ -47,6 +47,7 @@ const NoteList = (props: NoteListProps, ref: any) => {
           onScrollEnd?.();
         }
       }}
+      virtual
     />
   );
 };

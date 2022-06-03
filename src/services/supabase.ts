@@ -1,6 +1,4 @@
-import {
-  AuthChangeEvent, createClient, Session, User,
-} from '@supabase/supabase-js';
+import { createClient } from '@supabase/supabase-js';
 import { SupabaseEventTypes, SupabaseRealtimePayload } from '@supabase/supabase-js/dist/module/lib/types';
 
 const supabaseUrl = process.env.REACT_APP_SUPABASE_URL || 'https://supabase.co';
