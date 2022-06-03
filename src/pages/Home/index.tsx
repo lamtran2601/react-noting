@@ -33,34 +33,32 @@ const Home = () => {
       <Layout style={{
         margin: '0px 8px',
         overflow: 'auto',
+        height: '100%',
       }}
       >
-        <Space direction="vertical">
-          <Row
-            justify="space-between"
-            style={{
-              background: '#fff',
-              margin: '0px',
-              padding: '16px',
-            }}
-            gutter={[16, 16]}
-          >
-            <Space size={40}>
-              <Button icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />} onClick={() => setCollapsed(!collapsed)} />
-              <NoteHeaderContainer />
-            </Space>
-            <UserHeaderContainer />
-          </Row>
-          <Row>
-            <Content
-              style={{
-                background: '#fff',
-              }}
-            >
-              <Outlet />
-            </Content>
-          </Row>
-        </Space>
+        <Row
+          justify="space-between"
+          style={{
+            background: '#fff',
+            margin: '0px',
+            padding: '16px',
+          }}
+          gutter={[16, 16]}
+        >
+          <Space size={40}>
+            <Button icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />} onClick={() => setCollapsed(!collapsed)} />
+            <NoteHeaderContainer />
+          </Space>
+          <UserHeaderContainer />
+        </Row>
+        <div style={{ height: '10px' }} />
+        <Content style={{
+          background: '#fff',
+          height: '100%',
+        }}
+        >
+          <Outlet />
+        </Content>
       </Layout>
     </Layout>
   );

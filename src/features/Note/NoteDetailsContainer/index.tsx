@@ -52,6 +52,7 @@ const NoteDetailsContainer = () => {
     <div
       style={{
         padding: '16px 42px',
+        height: '100%',
       }}
     >
       {noteInList?.updated_at ? (
