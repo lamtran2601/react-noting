@@ -1,11 +1,13 @@
 import './NoteList.scss';
-import { Tree } from 'antd';
+import { Tree, TreeProps } from 'antd';
 import { Note } from 'models';
 import { forwardRef } from 'react';
 
 const NEW_NOTE_TITLE = 'Untitled';
-interface NoteListProps {
-  notes: Note[];
+
+type Node = Note & { children?: []};
+interface NoteListProps extends TreeProps {
+  notes: Node[];
   selectedKeys?: string[];
   onNoteClick: (id: string) => void;
   height?: number;
@@ -16,21 +18,25 @@ interface NoteListProps {
 const NoteList = (props: NoteListProps, ref: any) => {
   const {
     notes = [], onNoteClick, selectedKeys = [], height, onScrollEnd, scrollThreshold = 1,
+    ...treeProps
   } = props;
 
-  const treeData = notes.map((note) => {
+  const parseNotes = (list: Node[]): any => list.map((note) => {
     const firstLine = note.data.split('\n')[0] ?? '#';
     const title = firstLine.slice(firstLine.lastIndexOf('#') + 1).trimStart();
     return {
       title: title.length === 0 ? NEW_NOTE_TITLE : title,
       key: note.id,
+      ...note.children ? { children: parseNotes(note.children) } : {},
     };
   });
 
   return (
     <Tree
+      // eslint-disable-next-line react/jsx-props-no-spreading
+      {...treeProps}
       ref={ref}
-      treeData={treeData}
+      treeData={parseNotes(notes)}
       selectedKeys={selectedKeys}
       onSelect={(_, info) => onNoteClick(info.node.key.toString())}
       height={height}

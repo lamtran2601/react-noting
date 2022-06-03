@@ -32,7 +32,7 @@ const NoteDetailsContainer = () => {
   }, 300), [note]);
 
   const handleChange = useCallback((value: string) => {
-    const newNote = { id: note.id, data: value, updated_at: new Date() };
+    const newNote = { ...note, data: value, updated_at: new Date() };
     dispatch(setNoteDetails(newNote));
     dispatch(upsertNote(newNote));
     handleSave(value);

@@ -9,14 +9,17 @@ const UserProvider = (props: { children: ReactNode }) => {
   const { children } = props;
   const [currentUser, setCurrentUser] = useState<User | null>(null);
 
+  const handleUpdateUser = (user: any) => {
+    setCurrentUser((state) => {
+      if (user && state?.id === user.id) return state;
+      return ({ id: user?.id ?? '', email: user?.email ?? '' });
+    });
+  };
+
   useEffect(() => {
-    supabase.auth.refreshSession();
+    handleUpdateUser(supabase.auth.user());
     const subscribe = supabase.auth.onAuthStateChange((_, session) => {
-      const user = session?.user;
-      setCurrentUser((state) => {
-        if (user && state?.id === user.id) return state;
-        return ({ id: user?.id ?? '', email: user?.email ?? '' });
-      });
+      handleUpdateUser(session?.user);
     });
 
     return subscribe?.data?.unsubscribe;

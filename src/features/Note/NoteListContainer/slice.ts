@@ -9,11 +9,13 @@ import noteService from '../noteService';
 
 interface NoteListState {
   data: Note[];
+  loading: boolean;
   error: SerializedError | null;
 }
 
 const initialState: NoteListState = {
   data: [],
+  loading: false,
   error: null,
 };
 
@@ -93,12 +95,15 @@ export const noteListSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(getNotes.pending, (state) => {
+        state.loading = true;
         state.error = null;
       })
       .addCase(getNotes.fulfilled, (state, action) => {
+        state.loading = false;
         state.data = [...state.data, ...action.payload];
       })
       .addCase(getNotes.rejected, (state, action) => {
+        state.loading = false;
         state.error = action.error;
       })
       .addCase(createNote.pending, (state) => {

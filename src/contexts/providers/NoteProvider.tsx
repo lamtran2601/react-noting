@@ -1,6 +1,6 @@
 import { NoteContext, NoteContextProps, UserContext } from 'contexts';
 import {
-  createNote, getNotes, syncUpdateNotes,
+  createNote, getNotes, setNotes, syncUpdateNotes,
 } from 'features/Note';
 import { useAppDispatch, useAppSelector } from 'hooks';
 import { Note } from 'models';
