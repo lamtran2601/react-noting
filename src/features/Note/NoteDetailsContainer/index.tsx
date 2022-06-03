@@ -1,6 +1,10 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { message } from 'antd';
+import dayjs from 'dayjs';
+import {
+  Divider,
+  message, Row, Space, Typography,
+} from 'antd';
 import { debounce } from 'lodash';
 import { defaultNote } from 'models';
 import { useAppDispatch, useAppSelector } from 'hooks';
@@ -32,7 +36,7 @@ const NoteDetailsContainer = () => {
   }, 300), [note]);
 
   const handleChange = useCallback((value: string) => {
-    const newNote = { ...note, data: value, updated_at: new Date() };
+    const newNote = { ...note, data: value, updated_at: new Date().toISOString() };
     dispatch(setNoteDetails(newNote));
     dispatch(upsertNote(newNote));
     handleSave(value);
@@ -50,6 +54,14 @@ const NoteDetailsContainer = () => {
         padding: '16px 42px',
       }}
     >
+      {noteInList?.updated_at ? (
+        <Typography.Text type="secondary">
+          Edited:
+          {' '}
+          {dayjs(noteInList.updated_at).format('LLL')}
+        </Typography.Text>
+      ) : '' }
+      <Divider />
       <NoteDetails
         key={note.id}
         id={note.id}

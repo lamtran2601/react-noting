@@ -35,6 +35,7 @@ const NoteList = (props: NoteListProps, ref: any) => {
     <Tree
       // eslint-disable-next-line react/jsx-props-no-spreading
       {...treeProps}
+      blockNode
       ref={ref}
       treeData={parseNotes(notes)}
       selectedKeys={selectedKeys}

@@ -2,7 +2,6 @@ import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
 import {
   Button, Layout, Row, Space,
 } from 'antd';
-import { Header } from 'antd/lib/layout/layout';
 import { NoteListContainer, NoteHeaderContainer } from 'features/Note';
 import UserHeaderContainer from 'features/User/UserHeaderContainer';
 import { useEffect, useState } from 'react';
@@ -22,8 +21,7 @@ const Home = () => {
   return (
     <Layout style={{ height: '100vh' }}>
       <Sider
-        id="sider-container"
-        width={250}
+        width={280}
         trigger={null}
         collapsible
         collapsed={collapsed}
@@ -34,29 +32,35 @@ const Home = () => {
       </Sider>
       <Layout style={{
         margin: '0px 8px',
+        overflow: 'auto',
       }}
       >
-        <Header style={{
-          background: '#fff',
-          padding: '0px 16px',
-        }}
-        >
-          <Row justify="space-between">
+        <Space direction="vertical">
+          <Row
+            justify="space-between"
+            style={{
+              background: '#fff',
+              margin: '0px',
+              padding: '16px',
+            }}
+            gutter={[16, 16]}
+          >
             <Space size={40}>
               <Button icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />} onClick={() => setCollapsed(!collapsed)} />
               <NoteHeaderContainer />
             </Space>
             <UserHeaderContainer />
           </Row>
-        </Header>
-        <Content
-          style={{
-            background: '#fff',
-            overflow: 'auto',
-          }}
-        >
-          <Outlet />
-        </Content>
+          <Row>
+            <Content
+              style={{
+                background: '#fff',
+              }}
+            >
+              <Outlet />
+            </Content>
+          </Row>
+        </Space>
       </Layout>
     </Layout>
   );

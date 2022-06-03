@@ -8,6 +8,7 @@ import NoteList from 'components/NoteList';
 import { Note } from 'models';
 import { getNotes, setNotes } from 'features/Note';
 import Loading from 'components/Loading';
+import { Col, Row } from 'antd';
 
 const NEW_NOTE: Note = {
   id: '',
@@ -24,7 +25,7 @@ const NoteListContainer = () => {
 
   const [expandedKeys, setExpandedKeys] = useState([MY_NOTE_KEY]);
 
-  const LIMIT = 20;
+  const LIMIT = 40;
   const handleGetNotes = useCallback((offset = 0, limit = LIMIT) => dispatch(getNotes({
     from: offset,
     to: offset + limit - 1,
@@ -77,23 +78,19 @@ const NoteListContainer = () => {
   }, [notes]);
 
   return (
-    <div
-      style={{ padding: '1rem 0' }}
-    >
-      <NoteList
-        ref={treeRef}
-        notes={notesList}
-        selectedKeys={[currentNoteId]}
-        expandedKeys={expandedKeys}
-        defaultExpandParent
-        autoExpandParent
-        onExpand={(keys) => setExpandedKeys(keys.map((e) => e.toString()))}
-        onNoteClick={handleNoteClick}
-        height={window.innerHeight - 42}
-        scrollThreshold={0.8}
-        onScrollEnd={handleGetMoreNotes}
-      />
-    </div>
+    <NoteList
+      ref={treeRef}
+      notes={notesList}
+      selectedKeys={[currentNoteId]}
+      expandedKeys={expandedKeys}
+      defaultExpandParent
+      autoExpandParent
+      onExpand={(keys) => setExpandedKeys(keys.map((e) => e.toString()))}
+      onNoteClick={handleNoteClick}
+      height={window.innerHeight - 42}
+      scrollThreshold={0.8}
+      onScrollEnd={handleGetMoreNotes}
+    />
   );
 };
 export default NoteListContainer;
