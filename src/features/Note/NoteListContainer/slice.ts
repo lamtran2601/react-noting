@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-use-before-define */
 import { Note } from 'models';
 import {
   createAsyncThunk, createSlice, PayloadAction, SerializedError,
@@ -32,9 +31,9 @@ export const getNotes = createAsyncThunk('getNotes', (params: GetParams, thunkAP
   }
 });
 
-export const createNote = createAsyncThunk('createNote', (content: string | undefined, thunkAPI) => {
+export const createNote = createAsyncThunk('createNote', (note: Note, thunkAPI) => {
   try {
-    return noteService.createNote(content);
+    return noteService.createNote(note);
   } catch (error) {
     return thunkAPI.rejectWithValue(error);
   }

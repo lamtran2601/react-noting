@@ -2,6 +2,7 @@ import './NoteList.scss';
 import { Tree, TreeProps } from 'antd';
 import { Note } from 'models';
 import { forwardRef } from 'react';
+import { getTitleText } from 'helpers';
 
 const NEW_NOTE_TITLE = 'Untitled';
 
@@ -22,8 +23,7 @@ const NoteList = (props: NoteListProps, ref: any) => {
   } = props;
 
   const parseNotes = (list: Node[]): any => list.map((note) => {
-    const firstLine = note.data.split('\n')[0] ?? '#';
-    const title = firstLine.slice(firstLine.lastIndexOf('#') + 1).trimStart();
+    const title = getTitleText(note.data);
     return {
       title: title.length === 0 ? NEW_NOTE_TITLE : title,
       key: note.id,
@@ -33,7 +33,6 @@ const NoteList = (props: NoteListProps, ref: any) => {
 
   return (
     <Tree
-      // eslint-disable-next-line react/jsx-props-no-spreading
       {...treeProps}
       blockNode
       ref={ref}

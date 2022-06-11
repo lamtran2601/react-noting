@@ -85,7 +85,7 @@ const NoteListContainer = () => {
       autoExpandParent
       onExpand={(keys) => setExpandedKeys(keys.map((e) => e.toString()))}
       onNoteClick={handleNoteClick}
-      height={window.innerHeight - 42}
+      height={window.innerHeight}
       scrollThreshold={0.8}
       onScrollEnd={handleGetMoreNotes}
     />

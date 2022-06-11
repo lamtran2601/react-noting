@@ -51,8 +51,8 @@ const NoteDetailsContainer = () => {
   return (
     <div
       style={{
-        padding: '16px 42px',
-        height: '100%',
+        padding: '24px 42px',
+        flex: 1,
       }}
     >
       {noteInList?.updated_at ? (
@@ -62,7 +62,7 @@ const NoteDetailsContainer = () => {
           {dayjs(noteInList.updated_at).format('LLL')}
         </Typography.Text>
       ) : '' }
-      <Divider />
+      <Divider style={{ margin: '16px 0' }} />
       <NoteDetails
         key={note.id}
         id={note.id}

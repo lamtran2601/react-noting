@@ -1,5 +1,5 @@
 import {
-  Button, Form, Input, Space,
+  Button, Form, Input, Row, Space,
 } from 'antd';
 import { useForm } from 'antd/lib/form/Form';
 
@@ -56,20 +56,17 @@ const SignIn = (props: SignInProps) => {
       >
         <Input.Password />
       </Form.Item>
-      <Form.Item
-        wrapperCol={{
-          offset: 8,
-          span: 16,
-        }}
-      >
-        <Space>
-          <Button type="primary" onClick={handleSignIn}>
-            Login
-          </Button>
-          <Button type="default" onClick={handleSignUp}>
-            Register
-          </Button>
-        </Space>
+      <Form.Item style={{ justifyContent: 'center' }}>
+        <Row justify="center">
+          <Space>
+            <Button type="primary" onClick={handleSignIn}>
+              Login
+            </Button>
+            <Button type="default" onClick={handleSignUp}>
+              Register
+            </Button>
+          </Space>
+        </Row>
       </Form.Item>
     </Form>
   );

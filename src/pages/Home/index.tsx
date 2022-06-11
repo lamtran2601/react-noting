@@ -7,21 +7,28 @@ import UserHeaderContainer from 'features/User/UserHeaderContainer';
 import { useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 
-const { Content, Sider } = Layout;
+const { Sider } = Layout;
 
 const Home = () => {
   const [collapsed, setCollapsed] = useState(false);
 
+  const isMobile = window.innerWidth < 768;
+
   useEffect(() => {
-    if (window.innerWidth < 768) {
+    if (isMobile) {
       setCollapsed(true);
     }
-  }, []);
+  }, [isMobile]);
 
   return (
-    <Layout style={{ height: '100vh' }}>
+    <Layout style={{
+      height: '100vh',
+      width: '100vw',
+      overflow: 'auto',
+    }}
+    >
       <Sider
-        width={280}
+        width={isMobile ? 220 : 300}
         trigger={null}
         collapsible
         collapsed={collapsed}
@@ -32,8 +39,8 @@ const Home = () => {
       </Sider>
       <Layout style={{
         margin: '0px 8px',
-        overflow: 'auto',
         height: '100%',
+        width: '100%',
       }}
       >
         <Row
@@ -45,20 +52,21 @@ const Home = () => {
           }}
           gutter={[16, 16]}
         >
-          <Space size={40}>
+          <Space wrap>
             <Button icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />} onClick={() => setCollapsed(!collapsed)} />
             <NoteHeaderContainer />
           </Space>
           <UserHeaderContainer />
         </Row>
-        <div style={{ height: '10px' }} />
-        <Content style={{
+        <Row style={{ height: '10px' }} />
+        <Row style={{
           background: '#fff',
-          height: '100%',
+          flex: 1,
+          overflow: 'auto',
         }}
         >
           <Outlet />
-        </Content>
+        </Row>
       </Layout>
     </Layout>
   );

@@ -29,24 +29,31 @@ const NoteHeaderContainer = () => {
 
   const handleDeleteNote = useCallback(async () => {
     if (!id) return;
+    dispatch(deleteNoteById(id));
 
     const currentNoteIndex = notes.findIndex((note) => note.id === id);
-    // eslint-disable-next-line no-nested-ternary
-    const nextNote = currentNoteIndex > 0 ? notes[currentNoteIndex - 1] : (notes.length > currentNoteIndex ? notes[currentNoteIndex + 1] : null);
+    const preNote = currentNoteIndex > 0 ? notes[currentNoteIndex - 1] : null;
+    if (preNote) {
+      navigateToNote(preNote.id, { isTransitionTo: true });
+      return;
+    }
+    const nextNote = notes.length > currentNoteIndex ? notes[currentNoteIndex + 1] : null;
     if (nextNote) {
       navigateToNote(nextNote.id, { isTransitionTo: true });
-    } else {
-      createNote();
+      return;
     }
-    await dispatch(deleteNoteById(id));
+    createNote();
   }, [notes, id]);
 
   const handleDuplicateClick = useCallback(() => {
-    createNote(noteDetails.data);
+    const newNoteDatas = noteDetails.data.split('\n');
+    const firstLine = newNoteDatas[0];
+    const title = `${firstLine.substring(0, firstLine.lastIndexOf('#') + 1)} [Copy]${firstLine.replace('#', '')}`;
+    createNote(`${title}\n${newNoteDatas.slice(1).join('\n')}`);
   }, [noteDetails]);
 
   return (
-    <Space>
+    <Space wrap>
       <Row>
         <CloudTwoTone
           style={{ fontSize: '1.25rem' }}

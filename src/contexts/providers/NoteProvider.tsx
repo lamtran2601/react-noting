@@ -1,3 +1,4 @@
+import { message } from 'antd';
 import { NoteContext, NoteContextProps, UserContext } from 'contexts';
 import {
   createNote, getNotes, syncUpdateNotes,
@@ -43,12 +44,19 @@ const NoteProvider = (props: {children: ReactNode}) => {
   }, [currentNoteId, noteDetails]);
 
   const handleCreateNote = useCallback(async (content = '') => {
-    const createAction = await dispatch(createNote(content));
+    if (!user) {
+      message.warning("You aren't logged in, Note will be in the Public", 3);
+    }
+    const createAction = await dispatch(createNote({
+      data: content,
+      ...user ? { owner_id: user.id } : {},
+    } as Note));
+
     if (createAction.meta.requestStatus === 'fulfilled') {
       const noteId = (createAction.payload as Note).id;
       navigateToNote(noteId, { isTransitionTo: true });
     }
-  }, []);
+  }, [user]);
 
   const value: NoteContextProps = useMemo(() => ({
     createNote: handleCreateNote,
@@ -57,7 +65,7 @@ const NoteProvider = (props: {children: ReactNode}) => {
       scrollTo.current = callback;
     },
     handleGetNotes,
-  }), []);
+  }), [user]);
 
   return (
     <NoteContext.Provider value={value}>

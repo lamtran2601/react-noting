@@ -1,7 +1,8 @@
 import { UserOutlined } from '@ant-design/icons';
 import {
-  Button, Col, message, Modal, Row, Space,
+  Button, Col, Dropdown, Menu, message, Modal, Row, Space,
 } from 'antd';
+import MenuItem from 'antd/lib/menu/MenuItem';
 import SignIn from 'components/SignIn';
 import { UserContext } from 'contexts';
 import { useContext, useState } from 'react';
@@ -31,13 +32,26 @@ const UserHeaderContainer = () => {
     }
   };
 
+  const isLoggedIn = !!user?.id;
+
   return (
     <>
       <Row align="middle">
-        <Space>
-          <Button type="default" shape="circle" icon={<UserOutlined />} onClick={() => setVisibleModal(true)} />
-          {user?.email}
-        </Space>
+        {!isLoggedIn && <Button type="default" shape="circle" icon={<UserOutlined />} onClick={() => setVisibleModal(true)} />}
+        {isLoggedIn && (
+        <Dropdown
+          overlay={(
+            <Menu>
+              <MenuItem key="1" onClick={supabase.signOut}>Sign out</MenuItem>
+            </Menu>
+              )}
+        >
+          <Space>
+            {user?.email}
+            <UserOutlined />
+          </Space>
+        </Dropdown>
+        )}
       </Row>
       <Modal
         title="Login or Register"
