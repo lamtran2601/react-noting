@@ -22,15 +22,15 @@
 
 ## Getting Started
 
-1. Create a supabase project at [https://app.supabase.com](https://app.supabase.com)
+1. Create a supabase project at [https://app.supabase.com](https://app.supabase.com) (waiting for migrate files)
 2. Clone the repo
     ```sh
     git clone https://github.com/lamtran2601/react-noting.git
     ```
 3. Enter your API in `.env`
     ```env
-    REACT_APP_SUPABASE_URL='https://your-app.supabase.co';
-    REACT_APP_SUPABASE_ANON_KEY='YOUR-ANON-KEY';
+    REACT_APP_SUPABASE_URL='YOUR-SUPABASE-URL'
+    REACT_APP_SUPABASE_ANON_KEY='YOUR-ANON-KEY'
     ```
 4. Run app in local
     ```sh
