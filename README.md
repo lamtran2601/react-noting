@@ -1,6 +1,6 @@
 <br />
 <div align="center">
-  <h3 align="center">Noting</h3>
+  <h1 align="center">Noting</h1>
   <p align="center">
     Simple notion alternative with markdown format
     <br />
@@ -12,7 +12,13 @@
 
 [![Product Name Screen Shot][product-screenshot]](http://react-noting.vercel.app)
 
-### Built With
+## Features
+- [x] Public, Private mode
+- [x] Realtime Syncing
+- [x] Desktop & Mobile Responsive
+- [ ] Realtime Collaboration
+
+## Built With
 
 * [React.js](https://reactjs.org/)
 * [Redux Toolkit](https://github.com/reduxjs/redux-toolkit)
@@ -22,17 +28,29 @@
 
 ## Getting Started
 
-1. Create a supabase project at [https://app.supabase.com](https://app.supabase.com) (waiting for migrate files)
+1. [Setup Supabase](./Supabase.md#setup)
+
+    Install Supabase CLI
+    ```
+    brew install supabase/tap/supabase
+    ```
+    Start local server
+    ```
+    supabase start
+    ```
+
 2. Clone the repo
     ```sh
     git clone https://github.com/lamtran2601/react-noting.git
     ```
+
 3. Enter your API in `.env`
     ```env
     REACT_APP_SUPABASE_URL='YOUR-SUPABASE-URL'
     REACT_APP_SUPABASE_ANON_KEY='YOUR-ANON-KEY'
     ```
-4. Run app in local
+
+4. Run Frontend app in local
     ```sh
     yarn
     ```
