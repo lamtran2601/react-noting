@@ -1,15 +1,17 @@
-import { UserContext } from 'contexts';
-import { User } from 'models';
 import {
   ReactNode, useEffect, useMemo, useState,
 } from 'react';
+import { User as SupabaseUser } from '@supabase/gotrue-js';
+
+import { UserContext } from 'contexts';
+import { User } from 'models';
 import supabase from 'services/supabase';
 
 const UserProvider = (props: { children: ReactNode }) => {
   const { children } = props;
   const [currentUser, setCurrentUser] = useState<User | null>(null);
 
-  const handleUpdateUser = (user: any) => {
+  const handleUpdateUser = (user?: SupabaseUser | null) => {
     setCurrentUser((state) => {
       if (user && state?.id === user.id) return state;
       return (user ? { id: user.id ?? '', email: user.email ?? '' } : null);

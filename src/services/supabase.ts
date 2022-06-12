@@ -1,16 +1,17 @@
 import { createClient } from '@supabase/supabase-js';
 import { SupabaseEventTypes, SupabaseRealtimePayload } from '@supabase/supabase-js/dist/module/lib/types';
+import { Model } from 'models/Model';
 
 const supabaseUrl = process.env.REACT_APP_SUPABASE_URL || 'https://supabase.co';
 const supabaseKey = process.env.REACT_APP_SUPABASE_ANON_KEY || 'anon-key';
 export const supabase = createClient(supabaseUrl, supabaseKey, { autoRefreshToken: true, persistSession: true });
 
-export interface GetParams {
+export interface GetParams<T> {
   select?: string,
   from?: number,
   to?: number,
   order?: {
-    column?: string,
+    column: keyof T,
     order_options?: {
       ascending?: boolean,
     },
@@ -18,21 +19,21 @@ export interface GetParams {
 }
 
 const supabaseClientAPI = {
-  get: async <T = any>(table: string, options: GetParams = {}) => {
+  get: async <T = Model>(table: string, options: GetParams<T>) => {
     const {
-      select = '*', from = 0, to = 20, order = { column: 'created_at', order_options: { ascending: false } },
+      select = '*', from = 0, to = 20, order = { column: 'created_at' as keyof T, order_options: { ascending: false } },
     } = options;
     const { data, error } = await supabase
       .from<T>(table)
       .select(select)
-      .order(order.column ?? 'created_at' as any, order.order_options ?? { ascending: false })
+      .order(order.column ?? 'created_at' as keyof T, order.order_options ?? { ascending: false })
       .range(from, to);
     if (error) {
       throw new Error(error.message);
     }
     return data;
   },
-  getById: async <T = any>(table: string, id: T[keyof T]) => {
+  getById: async <T = Model>(table: string, id: T[keyof T]) => {
     const { data, error } = await supabase
       .from<T>(table)
       .select('*')
@@ -43,7 +44,7 @@ const supabaseClientAPI = {
     }
     return data;
   },
-  create: async <T = any>(table: string, payload: T) => {
+  create: async <T = Model>(table: string, payload: T) => {
     const { data, error } = await supabase
       .from<T>(table)
       .insert(payload)
@@ -53,14 +54,14 @@ const supabaseClientAPI = {
     }
     return data;
   },
-  createMany: async <T = any>(table: string, payload: any[]) => {
+  createMany: async <T = Model>(table: string, payload: Partial<T>[]) => {
     const { data, error } = await supabase.from<T>(table).insert(payload);
     if (error) {
       throw new Error(error.message);
     }
     return data;
   },
-  update: async <T = any>(table: string, id: T[keyof T], payload: any) => {
+  update: async <T = Model>(table: string, id: T[keyof T], payload: Partial<T>) => {
     const { data, error } = await supabase
       .from<T>(table)
       .update(payload)
@@ -71,7 +72,7 @@ const supabaseClientAPI = {
     }
     return data;
   },
-  delete: async <T = any>(table: string, id: T[keyof T]) => {
+  delete: async <T = Model>(table: string, id: T[keyof T]) => {
     const { data, error } = await supabase
       .from<T>(table)
       .delete()
@@ -82,7 +83,7 @@ const supabaseClientAPI = {
     }
     return data;
   },
-  subscribe: async <T = any>(
+  subscribe: async <T = Model>(
     table: string,
     callback: (payload: SupabaseRealtimePayload<T>) => void,
     on: SupabaseEventTypes = '*',

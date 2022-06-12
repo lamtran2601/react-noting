@@ -1,8 +1,10 @@
 import './NoteList.scss';
+import { forwardRef, Ref } from 'react';
 import { Tree, TreeProps } from 'antd';
 import { Note } from 'models';
-import { forwardRef } from 'react';
 import { getTitleText } from 'helpers';
+import RcTree from 'antd/node_modules/rc-tree';
+import { DataNode } from 'antd/lib/tree';
 
 const NEW_NOTE_TITLE = 'Untitled';
 
@@ -16,13 +18,13 @@ interface NoteListProps extends TreeProps {
   onScrollEnd?: () => void;
 }
 
-const NoteList = (props: NoteListProps, ref: any) => {
+const NoteList = (props: NoteListProps, ref?: Ref<RcTree>) => {
   const {
     notes = [], onNoteClick, selectedKeys = [], height, onScrollEnd, scrollThreshold = 1,
     ...treeProps
   } = props;
 
-  const parseNotes = (list: Node[]): any => list.map((note) => {
+  const parseNotes = (list: Node[]): DataNode[] => list.map((note) => {
     const title = getTitleText(note.data);
     return {
       title: title.length === 0 ? NEW_NOTE_TITLE : title,

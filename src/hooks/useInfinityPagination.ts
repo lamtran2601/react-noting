@@ -3,7 +3,7 @@ import { useRef, useCallback } from 'react';
 interface PaginationProps {
   dataLength: number;
   limit: number;
-  next: (offset: number) => any;
+  next: (offset: number) => void;
 }
 
 interface PaginationState {

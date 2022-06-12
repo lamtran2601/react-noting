@@ -1,12 +1,14 @@
 import {
+  Ref,
   useCallback, useContext, useEffect, useMemo, useRef, useState,
 } from 'react';
 import { useParams } from 'react-router-dom';
+import RcTree from 'antd/node_modules/rc-tree';
 import { NoteContext, UserContext } from 'contexts';
 import { useAppDispatch, useAppSelector, useInfinityPagination } from 'hooks';
 import NoteList from 'components/NoteList';
 import { Note } from 'models';
-import { getNotes, setNotes } from 'features/Note';
+import { setNotes } from 'features/Note';
 
 const NEW_NOTE: Note = {
   id: '',
@@ -16,28 +18,22 @@ const NEW_NOTE: Note = {
 const MY_NOTE_KEY = 'my-note';
 const PUBLIC_KEY = 'public';
 
+const LIMIT = 50;
+
 const NoteListContainer = () => {
   const { id: currentNoteId = '' } = useParams();
-  const treeRef = useRef<any>(null);
+  const treeRef = useRef<RcTree>();
   const dispatch = useAppDispatch();
 
   const [expandedKeys, setExpandedKeys] = useState([MY_NOTE_KEY, PUBLIC_KEY]);
 
-  const LIMIT = 50;
-  const handleGetNotes = useCallback((offset = 0, limit = LIMIT) => dispatch(getNotes({
-    from: offset,
-    to: offset + limit - 1,
-  })), []);
-
   const { user } = useContext(UserContext);
   const {
-    createNote, navigateToNote, setSrollTo,
+    createNote, navigateToNote, setSrollTo, handleGetNotes,
   } = useContext(NoteContext);
 
   useEffect(() => {
-    if (treeRef.current) {
-      setSrollTo?.((id) => treeRef.current.scrollTo?.({ key: id, align: 'auto' }));
-    }
+    setSrollTo?.((id) => treeRef.current?.scrollTo?.({ key: id, align: 'auto' }));
   }, [treeRef.current]);
 
   const notes = useAppSelector((state) => state.noteList.data);
@@ -77,7 +73,7 @@ const NoteListContainer = () => {
 
   return (
     <NoteList
-      ref={treeRef}
+      ref={treeRef as Ref<RcTree>}
       notes={notesList}
       selectedKeys={[currentNoteId]}
       expandedKeys={expandedKeys}

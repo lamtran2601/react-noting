@@ -16,7 +16,10 @@
 - [x] Public, Private mode
 - [x] Realtime Syncing
 - [x] Desktop & Mobile Responsive
-- [ ] Realtime Collaboration
+- [ ] Pin note
+- [ ] Note template
+- [ ] Document Collaboration
+- [ ] Export markdown file
 
 ## Built With
 

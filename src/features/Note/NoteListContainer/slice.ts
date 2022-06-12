@@ -18,7 +18,7 @@ const initialState: NoteListState = {
   error: null,
 };
 
-export const getNotes = createAsyncThunk('getNotes', (params: GetParams, thunkAPI) => {
+export const getNotes = createAsyncThunk('getNotes', (params: GetParams<Note>, thunkAPI) => {
   try {
     return supabaseClient.get<Note>('note', {
       order: {

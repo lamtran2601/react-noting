@@ -1,4 +1,5 @@
-export interface User {
-  id: string;
+import { Model } from './Model';
+
+export interface User extends Model{
   email: string;
 }

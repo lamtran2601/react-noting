@@ -1,9 +1,8 @@
-export interface Note {
-  id: string;
+import { Model } from './Model';
+
+export interface Note extends Model{
   tags?: string[];
   data: string;
-  created_at?: string;
-  updated_at?: string;
   owner_id?: string;
 }
 

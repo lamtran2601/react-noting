@@ -15,16 +15,14 @@ const NoteProvider = (props: {children: ReactNode}) => {
   const { id: currentNoteId = '' } = useParams();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const scrollTo = useRef<any>();
+  const scrollTo = useRef<(id: string) => void | undefined>();
 
   const { user } = useContext(UserContext);
   const noteDetails = useAppSelector((state) => state.nodeDetails.data);
 
-  const LIMIT = 20;
-
-  const handleGetNotes = useCallback((offset = 0) => dispatch(getNotes({
+  const handleGetNotes = useCallback((offset = 0, limit = 50) => dispatch(getNotes({
     from: offset,
-    to: offset + LIMIT - 1,
+    to: offset + limit - 1,
   })), []);
 
   const navigateToNote = (id: string, options = { isTransitionTo: false }) => {
