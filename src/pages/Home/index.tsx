@@ -3,7 +3,7 @@ import {
   Button, Layout, Row, Space,
 } from 'antd';
 import { NoteListContainer, NoteHeaderContainer } from 'features/Note';
-import UserHeaderContainer from 'features/User/UserHeaderContainer';
+import { UserHeaderContainer } from 'features/User';
 import { useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 

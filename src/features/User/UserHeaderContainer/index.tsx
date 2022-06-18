@@ -1,12 +1,13 @@
+import { useContext, useState } from 'react';
 import { UserOutlined } from '@ant-design/icons';
 import {
   Button, Col, Dropdown, Menu, message, Modal, Row, Space,
 } from 'antd';
+
 import MenuItem from 'antd/lib/menu/MenuItem';
-import SignIn from 'components/SignIn';
 import { UserContext } from 'contexts';
-import { useContext, useState } from 'react';
-import supabase from 'services/supabase';
+import SignIn from 'components/SignIn';
+import userService from '../userService';
 
 const UserHeaderContainer = () => {
   const [visibleModal, setVisibleModal] = useState(false);
@@ -15,7 +16,7 @@ const UserHeaderContainer = () => {
   const handleSignIn = async (payload: { email: string, password: string }) => {
     const { email, password } = payload;
     try {
-      await supabase.signIn(email, password);
+      await userService.signInByEmail(email, password);
       setVisibleModal(false);
     } catch (error) {
       message.error((error as Error).message);
@@ -25,7 +26,7 @@ const UserHeaderContainer = () => {
   const handleSignUp = async (payload: { email: string, password: string }) => {
     const { email, password } = payload;
     try {
-      await supabase.signUp(email, password);
+      await userService.signUpByEmail(email, password);
       setVisibleModal(false);
     } catch (error) {
       message.error((error as Error).message);
@@ -42,7 +43,7 @@ const UserHeaderContainer = () => {
         <Dropdown
           overlay={(
             <Menu>
-              <MenuItem key="1" onClick={supabase.signOut}>Sign out</MenuItem>
+              <MenuItem key="1" onClick={userService.signOut}>Sign out</MenuItem>
             </Menu>
               )}
         >

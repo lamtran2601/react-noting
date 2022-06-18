@@ -18,7 +18,7 @@ export interface GetParams<T> {
   },
 }
 
-const supabaseClientAPI = {
+export const supabaseAPI = {
   get: async <T = Model>(table: string, options: GetParams<T>) => {
     const {
       select = '*', from = 0, to = 20, order = { column: 'created_at' as keyof T, order_options: { ascending: false } },
@@ -90,27 +90,4 @@ const supabaseClientAPI = {
   ) => supabase.from<T>(table).on(on, callback).subscribe(),
 };
 
-const supabaseAuth = {
-  signUp: async (email: string, password: string) => {
-    const { user, session, error } = await supabase.auth.signUp({ email, password });
-    if (error) {
-      throw new Error(error.message);
-    }
-    return { user, session };
-  },
-  signIn: async (email: string, password: string) => {
-    const { user, session, error } = await supabase.auth.signIn({ email, password });
-    if (error) {
-      throw new Error(error.message);
-    }
-    return { user, session };
-  },
-  signOut: async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) {
-      throw new Error(error.message);
-    }
-  },
-};
-
-export default { ...supabaseClientAPI, ...supabaseAuth, auth: supabase.auth };
+export default supabase;

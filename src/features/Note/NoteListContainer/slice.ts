@@ -2,7 +2,6 @@ import { Note } from 'models';
 import {
   createAsyncThunk, createSlice, PayloadAction, SerializedError,
 } from '@reduxjs/toolkit';
-import supabaseClient, { GetParams } from 'services/supabase';
 import { message } from 'antd';
 import noteService from '../noteService';
 
@@ -18,9 +17,9 @@ const initialState: NoteListState = {
   error: null,
 };
 
-export const getNotes = createAsyncThunk('getNotes', (params: GetParams<Note>, thunkAPI) => {
+export const getNotes = createAsyncThunk('getNotes', (params: Parameters<typeof noteService.getNotes>[0], thunkAPI) => {
   try {
-    return supabaseClient.get<Note>('note', {
+    return noteService.getNotes({
       order: {
         column: 'updated_at',
       },
