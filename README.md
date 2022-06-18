@@ -13,9 +13,11 @@
 [![Product Name Screen Shot][product-screenshot]](http://react-noting.vercel.app)
 
 ## Features
+- [x] Take note like Notion
 - [x] Public, Private mode
 - [x] Realtime Syncing
 - [x] Desktop & Mobile Responsive
+- [ ] Upload image
 - [ ] Pin note
 - [ ] Note template
 - [ ] Document Collaboration

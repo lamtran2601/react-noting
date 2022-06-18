@@ -16,7 +16,7 @@ const initialState: NoteDetailsState = {
 
 export const getNoteById = createAsyncThunk('getNoteById', (id: string, thunkAPI) => {
   try {
-    return noteService.getNoteById(id);
+    return noteService.getById(id);
   } catch (error) {
     return thunkAPI.rejectWithValue(error);
   }
@@ -25,7 +25,7 @@ export const getNoteById = createAsyncThunk('getNoteById', (id: string, thunkAPI
 export const saveNote = createAsyncThunk('saveNote', (params: { id: string, content: string }, thunkAPI) => {
   const { id, content } = params;
   try {
-    return noteService.updateNote(id, content);
+    return noteService.update(id, { data: content });
   } catch (error) {
     return thunkAPI.rejectWithValue(error);
   }

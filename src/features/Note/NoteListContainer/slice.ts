@@ -17,9 +17,9 @@ const initialState: NoteListState = {
   error: null,
 };
 
-export const getNotes = createAsyncThunk('getNotes', (params: Parameters<typeof noteService.getNotes>[0], thunkAPI) => {
+export const getNotes = createAsyncThunk('getNotes', (params: Parameters<typeof noteService.get>[0], thunkAPI) => {
   try {
-    return noteService.getNotes({
+    return noteService.get({
       order: {
         column: 'updated_at',
       },
@@ -32,7 +32,7 @@ export const getNotes = createAsyncThunk('getNotes', (params: Parameters<typeof 
 
 export const createNote = createAsyncThunk('createNote', (note: Note, thunkAPI) => {
   try {
-    return noteService.createNote(note);
+    return noteService.create(note);
   } catch (error) {
     return thunkAPI.rejectWithValue(error);
   }
@@ -40,7 +40,7 @@ export const createNote = createAsyncThunk('createNote', (note: Note, thunkAPI) 
 
 export const deleteNoteById = createAsyncThunk('deleteNoteById', (id: string, thunkAPI) => {
   try {
-    return noteService.deleteNoteById(id);
+    return noteService.delete(id);
   } catch (error) {
     return thunkAPI.rejectWithValue(error);
   }
@@ -48,7 +48,7 @@ export const deleteNoteById = createAsyncThunk('deleteNoteById', (id: string, th
 
 export const syncUpdateNotes = createAsyncThunk('syncUpdateNotes', (_, thunkAPI) => {
   try {
-    return noteService.syncUpdateNote((payload) => {
+    return noteService.subscribe((payload) => {
       const note = payload.new;
       switch (payload.eventType) {
         case 'INSERT':

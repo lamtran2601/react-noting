@@ -90,4 +90,14 @@ export const supabaseAPI = {
   ) => supabase.from<T>(table).on(on, callback).subscribe(),
 };
 
+export const generateSupabaseAPI = <T = Model>(table: string) => ({
+  get: (options: GetParams<T>) => supabaseAPI.get<T>(table, options),
+  getById: (id: T[keyof T]) => supabaseAPI.getById<T>(table, id),
+  create: (payload: T) => supabaseAPI.create<T>(table, payload),
+  createMany: (payload: Partial<T>[]) => supabaseAPI.createMany<T>(table, payload),
+  update: (id: T[keyof T], payload: Partial<T>) => supabaseAPI.update<T>(table, id, payload),
+  delete: (id: T[keyof T]) => supabaseAPI.delete<T>(table, id),
+  subscribe: (callback: (payload: SupabaseRealtimePayload<T>) => void, on: SupabaseEventTypes = '*') => supabaseAPI.subscribe<T>(table, callback, on),
+});
+
 export default supabase;
