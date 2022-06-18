@@ -27,7 +27,7 @@
 * [Redux Toolkit](https://github.com/reduxjs/redux-toolkit)
 * [Ant Design](https://github.com/ant-design/ant-design/)
 * [rich-markdown-editor](https://github.com/outline/rich-markdown-editor)
-* [supabase](https://github.com/supabase/supabase)
+* [Supabase](https://github.com/supabase/supabase)
 
 ## Getting Started
 
